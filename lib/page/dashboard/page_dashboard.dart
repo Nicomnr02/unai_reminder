@@ -1,7 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:unai_reminder/page/authentication/user.dart';
-import 'package:unai_reminder/repository/user.dart';
+import 'package:unai_reminder/page/authentication/page_authentication.dart';
+import 'package:unai_reminder/repository/repo_authentication.dart';
 
 class DashboardPage extends StatefulWidget {
   const DashboardPage({super.key});

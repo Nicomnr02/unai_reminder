@@ -1,4 +1,4 @@
-import 'package:unai_reminder/utils/db.dart';
+import 'package:unai_reminder/utils/utils_db.dart';
 
 class UserRepository {
   final db = DB();

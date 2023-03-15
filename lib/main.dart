@@ -1,9 +1,7 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
-import 'package:unai_reminder/page/dashboard/dashboard.dart';
-import 'package:unai_reminder/page/screen_router/screen.dart';
-import 'package:unai_reminder/page/splash.dart';
-import 'package:unai_reminder/utils/db.dart';
+import 'package:unai_reminder/page/introduction/page_splash.dart';
+import 'package:unai_reminder/utils/utils_db.dart';
 
 void main() async {
   DB();
@@ -21,11 +19,19 @@ class MyApp extends StatefulWidget {
 class _MyAppState extends State<MyApp> {
   @override
   Widget build(BuildContext context) {
-    return const MaterialApp(
-      //still checking caous its cons
-      debugShowCheckedModeBanner: false,
-      home: SplashPage(),
-    );
+    return GestureDetector(
+        onTap: () {
+          FocusScopeNode currentFocus = FocusScope.of(context);
+
+          if (!currentFocus.hasPrimaryFocus) {
+            currentFocus.unfocus();
+          }
+        },
+        child: const MaterialApp(
+          //still checking caous its cons
+          debugShowCheckedModeBanner: false,
+          home: SplashPage(),
+        ));
   }
 }
 

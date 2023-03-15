@@ -1,16 +1,14 @@
 import 'dart:async';
-import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
-import 'package:http/io_client.dart';
 import 'package:internet_connection_checker/internet_connection_checker.dart';
 
-import 'package:unai_reminder/middleware/user.dart';
-import 'package:unai_reminder/model/user.dart';
-import 'package:unai_reminder/page/screen_router/screen.dart';
+import 'package:unai_reminder/middleware/middl_authentication.dart';
+import 'package:unai_reminder/model/model_creds.dart';
+import 'package:unai_reminder/page/router/router_page_router.dart';
 
-import '../repository/user.dart';
+import '../repository/repo_authentication.dart';
 
 //! API resource
 final dashboardURL = Uri.parse("https://online.unai.edu/mhs/welcome.php");
@@ -23,20 +21,22 @@ class UserAPI {
 
   Future<Credential> getCredentialFromServer(
       String username, String password, BuildContext context) async {
-    //! Get cookie-sessionID from /login (since unai use laravel to its system)
-    print("thiss?? -> $username");
-    print("thiss?? -> $password");
     String? cookie;
 
     bool result = await InternetConnectionChecker().hasConnection;
     if (result != true) {
-      print('no internet');
+      responseString = 'Please check your internet connection!';
+      return Credential("", "", "");
+    }
+
+    if (username == "" && password == "") {
+      responseString = 'Empty username and password!';
       return Credential("", "", "");
     }
 
     var client = http.Client();
     try {
-      final response = await http.post(loginURL, headers: {
+      final response = await client.post(loginURL, headers: {
         'Content-Type': 'application/x-www-form-urlencoded'
       }, body: {
         'username': username,
@@ -47,7 +47,7 @@ class UserAPI {
         responseString = "Username or Password is wrong";
         return Credential("", "", "");
       }
-      cookie = response.headers['set-cookie']!;
+      cookie = response.headers['set-cookie']!; // save cookie
     } on TimeoutException catch (_) {
       responseString =
           "Connection Timeout! \n Unai server may to be down or you weren't connect to internet";
@@ -63,11 +63,10 @@ class UserAPI {
   Future<dynamic> getDataFromServer(String cookie) async {
     bool result = await InternetConnectionChecker().hasConnection;
     if (result != true) {
-      responseString = 'No Internet';
+      responseString = 'Please check your internet connection!';
       return Credential("", "", "");
     }
 
-    //! Login to /welcome with cookie
     final client = http.Client();
     final request = http.Request('GET', dashboardURL);
     request.headers['cookie'] = cookie;
