@@ -6,8 +6,8 @@ class UserRepository {
   void write(String cookie) async {
     final prefs = await db.initDB();
     await prefs.setString('_cookie', cookie);
-    final data = await read("_cookie");
-    print("data berisi?? --> $data");
+    await read("_cookie");
+    // print("data berisi?? --> $data");
     return;
   }
 
@@ -19,7 +19,7 @@ class UserRepository {
 
   void delete() async {
     final prefs = await db.initDB();
-    await prefs.remove('_cookie');
+    await prefs.clear();
     final data = await read("_cookie");
     print("data kosong?? --> $data");
     return;

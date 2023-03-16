@@ -1,22 +1,27 @@
 import 'dart:async';
-
+import 'package:html/dom.dart' as dom;
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:internet_connection_checker/internet_connection_checker.dart';
+// ignore: depend_on_referenced_packages
+import 'package:html/parser.dart' as html_parser;
 
 import 'package:unai_reminder/middleware/middl_authentication.dart';
 import 'package:unai_reminder/model/model_creds.dart';
+import 'package:unai_reminder/page/dashboard/page_dashboard.dart';
 import 'package:unai_reminder/page/router/router_page_router.dart';
+import 'package:unai_reminder/repository/repo_dashboard.dart';
 
 import '../repository/repo_authentication.dart';
 
 //! API resource
-final dashboardURL = Uri.parse("https://online.unai.edu/mhs/welcome.php");
+final dashboardURL = Uri.parse("https://online.unai.edu/mhs/mk_disetujui.php");
 final loginURL = Uri.parse("https://online.unai.edu/mhs/login.php");
 
 class UserAPI {
   UserMiddleware userMiddl = UserMiddleware();
   UserRepository userRepo = UserRepository();
+  DashboardRepository dashRepo = DashboardRepository();
   String responseString = "";
 
   Future<Credential> getCredentialFromServer(
@@ -60,32 +65,71 @@ class UserAPI {
     return (Credential(username, password, cookie));
   }
 
-  Future<dynamic> getDataFromServer(String cookie) async {
+  void parser(String htmlData) async {
+    var cookie = await userRepo.read("_cookie");
+    if (cookie != "") {
+      return;
+    }
+
+    List<String> htmlTr = [];
+    dom.Document document = html_parser.parse(htmlData);
+    List<dom.Element> rows = document.getElementsByTagName('tr');
+    if (rows.isEmpty) {
+      print('empty');
+    }
+
+    for (dom.Element row in rows) {
+      String value = row.text;
+      htmlTr.add(value);
+    }
+
+    await dashRepo.write("_schedule", htmlTr);
+  }
+
+  void getDataFromServer(String cookie) async {
     bool result = await InternetConnectionChecker().hasConnection;
     if (result != true) {
       responseString = 'Please check your internet connection!';
-      return Credential("", "", "");
     }
 
-    final client = http.Client();
-    final request = http.Request('GET', dashboardURL);
-    request.headers['cookie'] = cookie;
-    final dashboardResponse = await client.send(request);
-    if (dashboardResponse.statusCode != 200) {
-      return Future.value(false);
+    http.Response resp =
+        await http.get(dashboardURL, headers: {'Cookie': cookie});
+
+    if (resp.statusCode != 200) {
+      return;
     }
-    client.close;
-    print(await dashboardResponse.stream.bytesToString());
+    dom.Document doc = html_parser.parse(resp.body);
+    print(doc);
+
+    var nameRows = doc.getElementsByClassName("username");
+    if (nameRows.isEmpty) {
+      return;
+    }
+    for (var name in nameRows) {
+      print(name.text);
+    }
+
+    var rows = doc.getElementsByTagName('tr');
+    if (rows.isEmpty) {
+      return;
+    }
+    var data = <String>[];
+    for (var row in rows) {
+      data.add(row.text);
+    }
+
+    await dashRepo.write("_scheduleObj", data);
+    // print("null? ${data[1]}");
   }
 
   Future login(BuildContext context, String username, String password) async {
     var authStatus = await getCredentialFromServer(username, password, context);
     var cookie = authStatus.cookie;
+    userRepo.write(cookie!);
 
-    print(getDataFromServer(cookie!));
+    getDataFromServer(cookie);
 
-    userRepo.write(cookie);
-
+    // ignore: use_build_context_synchronously
     Navigator.push(context,
         MaterialPageRoute(builder: (context) => Screen(responseString)));
   }
