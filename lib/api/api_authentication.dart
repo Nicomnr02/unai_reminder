@@ -8,7 +8,6 @@ import 'package:html/parser.dart' as html_parser;
 
 import 'package:unai_reminder/middleware/middl_authentication.dart';
 import 'package:unai_reminder/model/model_creds.dart';
-import 'package:unai_reminder/page/dashboard/page_dashboard.dart';
 import 'package:unai_reminder/page/router/router_page_router.dart';
 import 'package:unai_reminder/repository/repo_dashboard.dart';
 
@@ -65,60 +64,66 @@ class UserAPI {
     return (Credential(username, password, cookie));
   }
 
-  void parser(String htmlData) async {
-    var cookie = await userRepo.read("_cookie");
-    if (cookie != "") {
-      return;
-    }
+  // void parser(String htmlData) async {
+  //   var cookie = await userRepo.read("_cookie");
+  //   if (cookie != "") {
+  //     return;
+  //   }
 
-    List<String> htmlTr = [];
-    dom.Document document = html_parser.parse(htmlData);
-    List<dom.Element> rows = document.getElementsByTagName('tr');
-    if (rows.isEmpty) {
-      print('empty');
-    }
+  //   List<String> htmlTr = [];
+  //   dom.Document document = html_parser.parse(htmlData);
+  //   List<dom.Element> rows = document.getElementsByTagName('tr');
+  //   if (rows.isEmpty) {
+  //     print('empty');
+  //   }
 
-    for (dom.Element row in rows) {
-      String value = row.text;
-      htmlTr.add(value);
-    }
+  //   for (dom.Element row in rows) {
+  //     String value = row.text;
+  //     htmlTr.add(value);
+  //   }
 
-    await dashRepo.write("_schedule", htmlTr);
-  }
+  //   await dashRepo.write("_schedule", htmlTr);
+  // }
 
   void getDataFromServer(String cookie) async {
-    bool result = await InternetConnectionChecker().hasConnection;
-    if (result != true) {
-      responseString = 'Please check your internet connection!';
-    }
+    try {
+      bool result = await InternetConnectionChecker().hasConnection;
+      if (result != true) {
+        responseString = 'Please check your internet connection!';
+        return;
+      }
+      http.Response resp =
+          await http.get(dashboardURL, headers: {'Cookie': cookie});
 
-    http.Response resp =
-        await http.get(dashboardURL, headers: {'Cookie': cookie});
+      if (resp.statusCode != 200) {
+        responseString = 'Try again!';
+        return;
+      }
+      dom.Document doc = html_parser.parse(resp.body);
+      print(doc);
 
-    if (resp.statusCode != 200) {
+      var nameRows = doc.getElementsByClassName("username");
+      if (nameRows.isEmpty) {
+        return;
+      }
+      for (var name in nameRows) {
+        print(name.text);
+      }
+
+      var rows = doc.getElementsByTagName('tr');
+      if (rows.isEmpty) {
+        return;
+      }
+      var data = <String>[];
+      for (var row in rows) {
+        data.add(row.text);
+      }
+
+      await dashRepo.write("_scheduleObj", data);
+    } catch (e) {
       return;
     }
-    dom.Document doc = html_parser.parse(resp.body);
-    print(doc);
 
-    var nameRows = doc.getElementsByClassName("username");
-    if (nameRows.isEmpty) {
-      return;
-    }
-    for (var name in nameRows) {
-      print(name.text);
-    }
-
-    var rows = doc.getElementsByTagName('tr');
-    if (rows.isEmpty) {
-      return;
-    }
-    var data = <String>[];
-    for (var row in rows) {
-      data.add(row.text);
-    }
-
-    await dashRepo.write("_scheduleObj", data);
     // print("null? ${data[1]}");
   }
 

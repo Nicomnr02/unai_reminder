@@ -1,10 +1,12 @@
 import 'dart:io';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:unai_reminder/page/introduction/page_splash.dart';
 import 'package:unai_reminder/utils/utils_db.dart';
 
 void main() async {
   DB();
+  GestureBinding.instance.resamplingEnabled = true; //! will be check
   HttpOverrides.global = MyHttpOverrides();
   runApp(const MyApp());
 }
