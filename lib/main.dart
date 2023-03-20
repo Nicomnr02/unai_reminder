@@ -6,7 +6,9 @@ import 'package:unai_reminder/utils/utils_db.dart';
 
 void main() async {
   DB();
-  GestureBinding.instance.resamplingEnabled = true; //! will be check
+  WidgetsFlutterBinding.ensureInitialized();
+  GestureBinding.instance.resamplingEnabled = true;
+  //! will be check
   HttpOverrides.global = MyHttpOverrides();
   runApp(const MyApp());
 }

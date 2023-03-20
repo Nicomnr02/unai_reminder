@@ -36,13 +36,17 @@ class _ScheduleListState extends State<ScheduleList> {
   Widget bottomNavBarContentBuilder(List<String> scheduleData) {
     final List<Widget> widgetOptions = <Widget>[
       scheduleData.isEmpty
-          ? responseMessage.errorPageBuilder(context, "failed") //! will be check
-          : ListView.separated(
-              itemBuilder: (context, index) => const Divider(),
-              separatorBuilder: (context, index) {
-                return Text(scheduleData[index]);
-              },
-              itemCount: scheduleData.length),
+          ? const CircularProgressIndicator()
+          : //! alarm here
+          const Scaffold(
+              appBar: null,
+            ),
+      ListView.separated(
+          itemBuilder: (context, index) => const Divider(),
+          separatorBuilder: (context, index) {
+            return Text(scheduleData[index]);
+          },
+          itemCount: scheduleData.length),
       ElevatedButton(onPressed: logout, child: const Text("logout")),
     ];
 
@@ -72,7 +76,9 @@ class _ScheduleListState extends State<ScheduleList> {
                   iconSize: 35,
                   items: const <BottomNavigationBarItem>[
                     BottomNavigationBarItem(
-                        icon: Icon(Icons.alarm), label: 'Schedule'),
+                        icon: Icon(Icons.alarm), label: 'Alarm'),
+                    BottomNavigationBarItem(
+                        icon: Icon(Icons.schedule_outlined), label: 'Schedule'),
                     BottomNavigationBarItem(
                         icon: Icon(Icons.person), label: 'My Profile'),
                   ],
@@ -80,7 +86,8 @@ class _ScheduleListState extends State<ScheduleList> {
                   onTap: _onItemTapped,
                 ));
           } else if (snapshot.hasError) {
-            return const Text("error retrieving data");
+            return responseMessage.errorPageBuilder(
+                context, "Server Error, try again!");
           } else {
             return const CircularProgressIndicator();
           }

@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:ffi';
 import 'package:html/dom.dart' as dom;
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
@@ -8,6 +9,7 @@ import 'package:html/parser.dart' as html_parser;
 
 import 'package:unai_reminder/middleware/middl_authentication.dart';
 import 'package:unai_reminder/model/model_creds.dart';
+import 'package:unai_reminder/model/model_dashboard.dart';
 import 'package:unai_reminder/page/router/router_page_router.dart';
 import 'package:unai_reminder/repository/repo_dashboard.dart';
 
@@ -21,6 +23,9 @@ class UserAPI {
   UserMiddleware userMiddl = UserMiddleware();
   UserRepository userRepo = UserRepository();
   DashboardRepository dashRepo = DashboardRepository();
+
+  DashboardModel dashModel = DashboardModel();
+
   String responseString = "";
 
   Future<Credential> getCredentialFromServer(
@@ -64,27 +69,6 @@ class UserAPI {
     return (Credential(username, password, cookie));
   }
 
-  // void parser(String htmlData) async {
-  //   var cookie = await userRepo.read("_cookie");
-  //   if (cookie != "") {
-  //     return;
-  //   }
-
-  //   List<String> htmlTr = [];
-  //   dom.Document document = html_parser.parse(htmlData);
-  //   List<dom.Element> rows = document.getElementsByTagName('tr');
-  //   if (rows.isEmpty) {
-  //     print('empty');
-  //   }
-
-  //   for (dom.Element row in rows) {
-  //     String value = row.text;
-  //     htmlTr.add(value);
-  //   }
-
-  //   await dashRepo.write("_schedule", htmlTr);
-  // }
-
   void getDataFromServer(String cookie) async {
     try {
       bool result = await InternetConnectionChecker().hasConnection;
@@ -100,26 +84,76 @@ class UserAPI {
         return;
       }
       dom.Document doc = html_parser.parse(resp.body);
-      print(doc);
 
       var nameRows = doc.getElementsByClassName("username");
       if (nameRows.isEmpty) {
         return;
       }
       for (var name in nameRows) {
-        print(name.text);
+        userRepo.write("_username", name.text);
       }
 
+      var rowsData = doc.getElementsByTagName('td');
       var rows = doc.getElementsByTagName('tr');
       if (rows.isEmpty) {
         return;
       }
-      var data = <String>[];
-      for (var row in rows) {
-        data.add(row.text);
+      // List<String> listData = List.generate(6, (index) => "");
+      // for (var j = 7; j < days.length; j++) {
+      //   if (rows[j].text.contains("S")) {
+      //     data[0] += "${rows[j].text} |";
+      //   } else if (days[j].text.contains("M")) {
+      //     data[1] += "${rows[j].text} |";
+      //   } else if (days[j].text.contains("T")) {
+      //     data[2] += "${rows[j].text} |";
+      //   } else if (days[j].text.contains("W")) {
+      //     data[3] += "${rows[j].text} |";
+      //   } else if (days[j].text.contains("Th")) {
+      //     data[4] += "${rows[j].text} |";
+      //   } else if (days[j].text.contains("F")) {
+      //     data[5] += "${rows[j].text} |";
+      //   }
+
+      List<String> data = [];
+      int counter = 0;
+      String rowData = "";
+      for (var i = 0; i < rowsData.length; i++) {
+        if (counter != 8) {
+          rowData += "${rowsData[i].text} ";
+          counter += 1;
+          continue;
+        }
+        data.add(rowData);
+        rowData = "";
+        counter = 0;
       }
 
-      await dashRepo.write("_scheduleObj", data);
+      for (var j = 0; j < data.length; j++) {
+        var splitted = data[j].split(" ");
+        if (splitted.contains("S.")) {
+          print('Sunday Class: ${splitted[2]} \n');
+        } else if (splitted.contains("M.")) {
+          print('Monday Class: ${splitted[2]}\n');
+        } else if (splitted.contains("T.")) {
+          print('Tuesday Class: ${splitted[2]}\n');
+        } else if (splitted.contains("W.")) {
+          print('Wednesday Class:${splitted[2]}\n');
+        } else if (splitted.contains("Th.")) {
+          var majorKey = splitted[1];
+          var majorName = splitted.sublist(
+              2, splitted.indexWhere((element) => element.contains("Prodi:")));
+
+          var lastIdxForLectureName =
+              splitted.indexWhere((element) => element.contains("Phone:"));
+          var lectureName = splitted.sublist(
+              lastIdxForLectureName - 5, lastIdxForLectureName);
+
+          print('Thursday Class:$majorKey - $majorName - $lectureName\n');
+        } else if (splitted.contains("F.")) {
+          print('Friday Class: ${splitted[2]}\n');
+        }
+      }
+      await dashRepo.write("_scheduleObj", []);
     } catch (e) {
       return;
     }
@@ -130,7 +164,7 @@ class UserAPI {
   Future login(BuildContext context, String username, String password) async {
     var authStatus = await getCredentialFromServer(username, password, context);
     var cookie = authStatus.cookie;
-    userRepo.write(cookie!);
+    userRepo.write("_cookie", cookie!);
 
     getDataFromServer(cookie);
 
