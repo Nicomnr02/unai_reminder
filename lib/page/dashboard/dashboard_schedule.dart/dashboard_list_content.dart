@@ -20,8 +20,44 @@ class _ScheduleListState extends State<ScheduleList> {
 
   int _selectedIndex = 0;
 
-  Future<List<String>> getData() async {
-    var scheduleData = await dashboardRepo.read("_scheduleObj");
+  Future<List<List<String>>> getData() async {
+    // List<String> days = ["S.", "M.", "T.", "W.", "Th.", "F."];
+    List<List<String>> scheduleData = List.empty(growable: true);
+    // scheduleData = [
+    //   await dashboardRepo.read("S."),
+    //   await dashboardRepo.read("M."),
+    //   await dashboardRepo.read("T."),
+    //   await dashboardRepo.read("W."),
+    //   await dashboardRepo.read("Th."),
+    //   await dashboardRepo.read("F."),
+    // ];
+
+    var s = await dashboardRepo.read("S.");
+    scheduleData.add(s);
+
+    var m = await dashboardRepo.read("M.");
+    scheduleData.add(m);
+
+    var t = await dashboardRepo.read("T.");
+    scheduleData.add(t);
+
+    var w = await dashboardRepo.read("W.");
+    scheduleData.add(w);
+
+    var th = await dashboardRepo.read("Th.");
+    scheduleData.add(th);
+
+    var f = await dashboardRepo.read("F.");
+    scheduleData.add(f);
+
+    return scheduleData;
+
+    //![LATER] make looping from 'scheduleData' above to get hours/time for alarm needed.
+  }
+
+  Future<List<List<String>>> showData() async {
+    var scheduleData = await getData();
+
     setState(() {});
     return scheduleData;
   }
@@ -33,7 +69,7 @@ class _ScheduleListState extends State<ScheduleList> {
         CupertinoPageRoute(builder: (ctx) => const LoginPage()));
   }
 
-  Widget bottomNavBarContentBuilder(List<String> scheduleData) {
+  Widget bottomNavBarContentBuilder(List<List<String>> scheduleData) {
     final List<Widget> widgetOptions = <Widget>[
       scheduleData.isEmpty
           ? const CircularProgressIndicator()
@@ -44,7 +80,7 @@ class _ScheduleListState extends State<ScheduleList> {
       ListView.separated(
           itemBuilder: (context, index) => const Divider(),
           separatorBuilder: (context, index) {
-            return Text(scheduleData[index]);
+            return Text('${scheduleData[index]}'); //! will be card!
           },
           itemCount: scheduleData.length),
       ElevatedButton(onPressed: logout, child: const Text("logout")),
@@ -62,7 +98,7 @@ class _ScheduleListState extends State<ScheduleList> {
   @override
   Widget build(BuildContext context) {
     return FutureBuilder(
-        future: getData(),
+        future: showData(),
         builder: (context, snapshot) {
           if (snapshot.hasData) {
             return Scaffold(

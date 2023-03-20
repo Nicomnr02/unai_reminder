@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:ffi';
 import 'package:html/dom.dart' as dom;
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
@@ -21,6 +20,7 @@ final loginURL = Uri.parse("https://online.unai.edu/mhs/login.php");
 
 class UserAPI {
   UserMiddleware userMiddl = UserMiddleware();
+
   UserRepository userRepo = UserRepository();
   DashboardRepository dashRepo = DashboardRepository();
 
@@ -69,6 +69,41 @@ class UserAPI {
     return (Credential(username, password, cookie));
   }
 
+  Future<List<String>> saveDataToSharedPf(List<String> splitted) async {
+    var pointerTodata =
+        splitted.indexWhere((element) => element.contains("Phone:"));
+
+    var day = splitted[pointerTodata + 4];
+
+    var majorKey = [splitted[1]];
+    var majorName = splitted.sublist(
+        2, splitted.indexWhere((element) => element.contains("Prodi:")));
+
+    var pointerToLectureName =
+        splitted.indexWhere((element) => element.contains("Prodi:"));
+    var lectureName =
+        splitted.sublist(pointerToLectureName + 1, pointerTodata - 1);
+
+    var time = splitted[pointerTodata + 5];
+
+    var sksAmount = splitted[pointerTodata + 2];
+
+    var existSchedule = await dashRepo.read(day);
+    if (existSchedule.isEmpty == false) {
+      var currentSchedule = existSchedule[0];
+      existSchedule = [];
+      existSchedule.add(
+          '$currentSchedule $majorKey - $majorName - $lectureName - $time - $sksAmount ');
+      dashRepo.write(day, existSchedule);
+      return existSchedule;
+    }
+
+    dashRepo.write(day,
+        ['$majorKey - $majorName - $lectureName - $time - $sksAmount ']);
+
+    return await dashRepo.read(day);
+  }
+
   void getDataFromServer(String cookie) async {
     try {
       bool result = await InternetConnectionChecker().hasConnection;
@@ -98,22 +133,6 @@ class UserAPI {
       if (rows.isEmpty) {
         return;
       }
-      // List<String> listData = List.generate(6, (index) => "");
-      // for (var j = 7; j < days.length; j++) {
-      //   if (rows[j].text.contains("S")) {
-      //     data[0] += "${rows[j].text} |";
-      //   } else if (days[j].text.contains("M")) {
-      //     data[1] += "${rows[j].text} |";
-      //   } else if (days[j].text.contains("T")) {
-      //     data[2] += "${rows[j].text} |";
-      //   } else if (days[j].text.contains("W")) {
-      //     data[3] += "${rows[j].text} |";
-      //   } else if (days[j].text.contains("Th")) {
-      //     data[4] += "${rows[j].text} |";
-      //   } else if (days[j].text.contains("F")) {
-      //     data[5] += "${rows[j].text} |";
-      //   }
-
       List<String> data = [];
       int counter = 0;
       String rowData = "";
@@ -130,35 +149,11 @@ class UserAPI {
 
       for (var j = 0; j < data.length; j++) {
         var splitted = data[j].split(" ");
-        if (splitted.contains("S.")) {
-          print('Sunday Class: ${splitted[2]} \n');
-        } else if (splitted.contains("M.")) {
-          print('Monday Class: ${splitted[2]}\n');
-        } else if (splitted.contains("T.")) {
-          print('Tuesday Class: ${splitted[2]}\n');
-        } else if (splitted.contains("W.")) {
-          print('Wednesday Class:${splitted[2]}\n');
-        } else if (splitted.contains("Th.")) {
-          var majorKey = splitted[1];
-          var majorName = splitted.sublist(
-              2, splitted.indexWhere((element) => element.contains("Prodi:")));
-
-          var lastIdxForLectureName =
-              splitted.indexWhere((element) => element.contains("Phone:"));
-          var lectureName = splitted.sublist(
-              lastIdxForLectureName - 5, lastIdxForLectureName);
-
-          print('Thursday Class:$majorKey - $majorName - $lectureName\n');
-        } else if (splitted.contains("F.")) {
-          print('Friday Class: ${splitted[2]}\n');
-        }
+        await saveDataToSharedPf(splitted);
       }
-      await dashRepo.write("_scheduleObj", []);
     } catch (e) {
       return;
     }
-
-    // print("null? ${data[1]}");
   }
 
   Future login(BuildContext context, String username, String password) async {
