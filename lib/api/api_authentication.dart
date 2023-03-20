@@ -98,8 +98,8 @@ class UserAPI {
       return existSchedule;
     }
 
-    dashRepo.write(day,
-        ['$majorKey - $majorName - $lectureName - $time - $sksAmount ']);
+    dashRepo.write(
+        day, ['$majorKey - $majorName - $lectureName - $time - $sksAmount ']);
 
     return await dashRepo.read(day);
   }
@@ -125,7 +125,8 @@ class UserAPI {
         return;
       }
       for (var name in nameRows) {
-        userRepo.write("_username", name.text);
+        var splittedName = name.text.split(" ");
+        userRepo.write("_username", splittedName[0]);
       }
 
       var rowsData = doc.getElementsByTagName('td');

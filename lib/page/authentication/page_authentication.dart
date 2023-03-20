@@ -18,7 +18,8 @@ class _LoginPageState extends State<LoginPage> {
   TextEditingController usernameEditingController = TextEditingController();
   TextEditingController passwordEditingController = TextEditingController();
   bool _passwordVisible = true;
-
+  bool _isTapping = false;
+  Color _textFieldColor = Colors.white10;
   void submit(BuildContext context) async {
     setState(() {
       var usernameDataInput = usernameEditingController.text;
@@ -32,7 +33,7 @@ class _LoginPageState extends State<LoginPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       extendBodyBehindAppBar: true,
-      backgroundColor: Colors.amberAccent,
+      backgroundColor: Colors.black,
       appBar: AppBar(
         leading: IconButton(
           icon: const Icon(Icons.arrow_back_ios),
@@ -42,7 +43,7 @@ class _LoginPageState extends State<LoginPage> {
                 builder: (context) => const IntroductionPage()));
           },
         ),
-        backgroundColor: Colors.amberAccent,
+        backgroundColor: Colors.black,
         elevation: 0,
       ),
       body: Column(
@@ -59,21 +60,23 @@ class _LoginPageState extends State<LoginPage> {
                     textAlign: TextAlign.start,
                     style: TextStyle(
                         fontFamily: 'Sp',
-                        color: Colors.black,
+                        color: Colors.white,
                         fontSize: 30,
                         fontWeight: FontWeight.bold),
                   ),
                 ),
                 TextFormField(
+                  maxLength: 7,
                   controller: usernameEditingController,
                   keyboardType: TextInputType.name,
-                  style: const TextStyle(color: Colors.black),
+                  cursorColor: Colors.white12,
+                  style: const TextStyle(color: Colors.white),
                   decoration: InputDecoration(
                     contentPadding: const EdgeInsets.symmetric(
                       vertical: 13,
                     ),
                     filled: true,
-                    fillColor: Colors.white10,
+                    fillColor: _textFieldColor,
                     border: OutlineInputBorder(
                         borderSide: BorderSide.none,
                         borderRadius: BorderRadius.circular(5)),
@@ -93,7 +96,7 @@ class _LoginPageState extends State<LoginPage> {
                     textAlign: TextAlign.start,
                     style: TextStyle(
                         fontFamily: 'Sp',
-                        color: Colors.black,
+                        color: Colors.white,
                         fontSize: 30,
                         fontWeight: FontWeight.bold),
                   ),
@@ -101,11 +104,13 @@ class _LoginPageState extends State<LoginPage> {
                 TextFormField(
                   controller: passwordEditingController,
                   obscureText: _passwordVisible,
-                  style: const TextStyle(color: Colors.black),
+                  cursorColor: Colors.white12,
+                  style: const TextStyle(color: Colors.white),
                   decoration: InputDecoration(
                     contentPadding: const EdgeInsets.symmetric(vertical: 13),
                     filled: true,
-                    fillColor: Colors.white24,
+                    fillColor: Colors.white10,
+                    hoverColor: Colors.white24,
                     border: OutlineInputBorder(
                         borderSide: BorderSide.none,
                         borderRadius: BorderRadius.circular(5)),
@@ -118,7 +123,7 @@ class _LoginPageState extends State<LoginPage> {
                         _passwordVisible
                             ? Icons.visibility_off
                             : Icons.visibility,
-                        color: Theme.of(context).focusColor,
+                        color: Theme.of(context).highlightColor,
                       ),
                       onPressed: () {
                         // Update the state i.e. toogle the state of passwordVisible variable

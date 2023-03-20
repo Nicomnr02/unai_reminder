@@ -4,7 +4,7 @@ class ResponseMessage {
   Widget errorPageBuilder(BuildContext context, String msg) {
     return Scaffold(
       appBar: null,
-      backgroundColor: const Color.fromARGB(173, 136, 113, 30),
+      backgroundColor: Colors.black87,
       body: Center(
           child: SizedBox(
         height: 200,

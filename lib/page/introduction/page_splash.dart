@@ -10,13 +10,13 @@ class SplashPage extends StatefulWidget {
 }
 
 class _SplashPageState extends State<SplashPage> {
-  var spinkit = const SpinKitPouringHourGlass(
-    color: Colors.yellow,
+  var spinkit = const SpinKitSquareCircle(
+    color: Colors.blue,
     size: 50.0,
   );
 
   void navigateToMainScreen() async {
-    await Future.delayed(const Duration(seconds: 1));
+    await Future.delayed(const Duration(seconds: 3));
     // ignore: use_build_context_synchronously
     Navigator.pushReplacement(
         context, MaterialPageRoute(builder: (context) => Screen("")));
@@ -33,9 +33,9 @@ class _SplashPageState extends State<SplashPage> {
     return MaterialApp(
         debugShowCheckedModeBanner: false,
         home: Scaffold(
-          backgroundColor: Colors.amberAccent,
+          backgroundColor: const Color.fromARGB(255, 0, 0, 0),
           body: Center(
-            child: Image.asset('assets/images/times.png'),
+            child: spinkit,
           ),
         ));
   }
