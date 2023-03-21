@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'package:unai_reminder/model/model_schedule.dart';
 import 'package:unai_reminder/repository/repo_authentication.dart';
 import 'package:unai_reminder/repository/repo_dashboard.dart';
 
@@ -15,6 +16,7 @@ class DashboardPage extends StatefulWidget {
 
 class _DashboardPageState extends State<DashboardPage> {
   String _username = "";
+  List<ScheduleModel> _scheduleModel = List.empty(growable: true);
   UserRepository userRepo = UserRepository();
   DashboardRepository dashboardRepo = DashboardRepository();
 
@@ -32,7 +34,9 @@ class _DashboardPageState extends State<DashboardPage> {
 
   Future<String> getUserName() async {
     _username = await UserRepository().read("_username");
-    setState(() {});
+    if (_username == "") {
+      setState(() {});
+    }
     return _username;
   }
 
@@ -61,12 +65,28 @@ class _DashboardPageState extends State<DashboardPage> {
   }
 
   Future<List<List<String>>> showData() async {
-    var scheduleData = await getData();
-    //TODO : "Convert 'scheduleData' to List<String> for schedule needed (make it easy to consume)"
+    var scheduleData = List.filled(6, <String>[]);
+    scheduleData = await getData();
 
-    for (var i = 0; i < scheduleData.length; i++) {}
+    if (scheduleData == []) {
+      setState(() {});
+    }
 
-    setState(() {});
+    int start = 0;
+    int end = 0;
+    for (var i = 0; i < scheduleData.length; i++) {
+      var splitted = scheduleData[i];
+      if (splitted.isEmpty == true) {
+        var scheduleObj =
+            ScheduleModel("", "", "", "", "", "", "No schedule today!");
+        _scheduleModel.add(scheduleObj);
+        continue;
+      }
+
+      // var scheduleObj = ScheduleModel(sche, majorName, lectureName, time, sksAmount, isNoSchedule)
+      // print(splitted[i][0]);
+    }
+
     return scheduleData;
   }
 

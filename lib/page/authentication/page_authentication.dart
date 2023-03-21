@@ -174,8 +174,3 @@ class _LoginPageState extends State<LoginPage> {
     );
   }
 }
-
-
-
-//TODO : (NEXT) Fetch schedule's data from Unai Online System by this user account. 
-//TODO : 

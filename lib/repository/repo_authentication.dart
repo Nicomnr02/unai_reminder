@@ -6,8 +6,8 @@ class UserRepository {
   void write(String key, String val) async {
     final prefs = await db.initDB();
     await prefs.setString(key, val);
-    await read("_cookie");
-    // print("data berisi?? --> $data");
+    var data = await read("_cookie");
+    print("data berisi?? --> $data");
     return;
   }
 

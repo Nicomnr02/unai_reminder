@@ -8,7 +8,6 @@ void main() async {
   DB();
   WidgetsFlutterBinding.ensureInitialized();
   GestureBinding.instance.resamplingEnabled = true;
-  //! will be check
   HttpOverrides.global = MyHttpOverrides();
   runApp(const MyApp());
 }

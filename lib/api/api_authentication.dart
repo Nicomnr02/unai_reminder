@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:developer';
 import 'package:html/dom.dart' as dom;
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
@@ -6,9 +7,7 @@ import 'package:internet_connection_checker/internet_connection_checker.dart';
 // ignore: depend_on_referenced_packages
 import 'package:html/parser.dart' as html_parser;
 
-import 'package:unai_reminder/middleware/middl_authentication.dart';
 import 'package:unai_reminder/model/model_creds.dart';
-import 'package:unai_reminder/model/model_dashboard.dart';
 import 'package:unai_reminder/page/router/router_page_router.dart';
 import 'package:unai_reminder/repository/repo_dashboard.dart';
 
@@ -19,12 +18,8 @@ final dashboardURL = Uri.parse("https://online.unai.edu/mhs/mk_disetujui.php");
 final loginURL = Uri.parse("https://online.unai.edu/mhs/login.php");
 
 class UserAPI {
-  UserMiddleware userMiddl = UserMiddleware();
-
   UserRepository userRepo = UserRepository();
   DashboardRepository dashRepo = DashboardRepository();
-
-  DashboardModel dashModel = DashboardModel();
 
   String responseString = "";
 
@@ -75,14 +70,17 @@ class UserAPI {
 
     var day = splitted[pointerTodata + 4];
 
-    var majorKey = [splitted[1]];
-    var majorName = splitted.sublist(
-        2, splitted.indexWhere((element) => element.contains("Prodi:")));
+    var majorKey = splitted[1];
+    var majorName = (splitted
+        .sublist(
+            2, splitted.indexWhere((element) => element.contains("Prodi:")))
+        .join(" "));
 
     var pointerToLectureName =
         splitted.indexWhere((element) => element.contains("Prodi:"));
-    var lectureName =
-        splitted.sublist(pointerToLectureName + 1, pointerTodata - 1);
+    var lectureName = (splitted
+        .sublist(pointerToLectureName + 1, pointerTodata - 1)
+        .join(" "));
 
     var time = splitted[pointerTodata + 5];
 
@@ -92,14 +90,14 @@ class UserAPI {
     if (existSchedule.isEmpty == false) {
       var currentSchedule = existSchedule[0];
       existSchedule = [];
+      var conjuctionVar = "conjuction";
       existSchedule.add(
-          '$currentSchedule $majorKey - $majorName - $lectureName - $time - $sksAmount ');
+          '$currentSchedule|$conjuctionVar|$majorKey|$majorName|$lectureName|$time|$sksAmount');
       dashRepo.write(day, existSchedule);
       return existSchedule;
     }
 
-    dashRepo.write(
-        day, ['$majorKey - $majorName - $lectureName - $time - $sksAmount ']);
+    dashRepo.write(day, ['$majorKey|$majorName|$lectureName|$time|$sksAmount']);
 
     return await dashRepo.read(day);
   }
@@ -147,7 +145,6 @@ class UserAPI {
         rowData = "";
         counter = 0;
       }
-
       for (var j = 0; j < data.length; j++) {
         var splitted = data[j].split(" ");
         await saveDataToSharedPf(splitted);
@@ -164,7 +161,6 @@ class UserAPI {
 
     getDataFromServer(cookie);
 
-    // ignore: use_build_context_synchronously
     Navigator.push(context,
         MaterialPageRoute(builder: (context) => Screen(responseString)));
   }
