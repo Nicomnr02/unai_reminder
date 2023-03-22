@@ -7,7 +7,6 @@ import 'package:unai_reminder/repository/repo_authentication.dart';
 // ignore: must_be_immutable
 class Screen extends StatelessWidget {
   String responseString;
-  bool isFirstLogin = true;
   Screen(this.responseString, {super.key});
 
   UserRepository usrData = UserRepository();
@@ -43,9 +42,9 @@ class Screen extends StatelessWidget {
                 } else if (snapshot.data == "" && responseString == "") {
                   return const IntroductionPage();
                 } else if (snapshot.data == "") {
-                  responseMsg.errorPageBuilder(context, responseString);
                   return responseMsg.errorPageBuilder(context, responseString);
                 } else {
+                  print('kuki bapak kau = ${snapshot.data}');
                   return const DashboardPage();
                 }
               },

@@ -33,7 +33,7 @@ class _SplashPageState extends State<SplashPage> {
     return MaterialApp(
         debugShowCheckedModeBanner: false,
         home: Scaffold(
-          backgroundColor: const Color.fromARGB(255, 0, 0, 0),
+          backgroundColor: Colors.black,
           body: Center(
             child: spinkit,
           ),

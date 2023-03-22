@@ -1,8 +1,7 @@
-import 'dart:io';
-
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'package:unai_reminder/page/dashboard/page_schedule.dart';
 import 'package:unai_reminder/repository/repo_authentication.dart';
 import 'package:unai_reminder/repository/repo_dashboard.dart';
 
@@ -19,8 +18,6 @@ class _DashboardPageState extends State<DashboardPage> {
   String _username = "";
   UserRepository userRepo = UserRepository();
   DashboardRepository dashboardRepo = DashboardRepository();
-
-  List<List<String>> _scheduleData = List.empty(growable: true);
 
   var spinkit = const SpinKitWave(
     color: Colors.blue,
@@ -71,9 +68,7 @@ class _DashboardPageState extends State<DashboardPage> {
     scheduleData = await getData();
 
     if (scheduleData == []) {
-      setState(() {
-        _scheduleData = scheduleData;
-      });
+      setState(() {});
     }
 
     return scheduleData;
@@ -137,51 +132,43 @@ class _DashboardPageState extends State<DashboardPage> {
             final username = snapshot.data[0] as String;
             final schedule = snapshot.data[1] as List<List<String>>;
             return Scaffold(
-                backgroundColor: Colors.black,
-                appBar: AppBar(
-                  title: Container(
-                    decoration: const BoxDecoration(),
-                    child: Padding(
-                      padding: const EdgeInsets.only(top: 15),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          username == ""
-                              ? spinkit
-                              : Text(
-                                  username,
-                                  style: const TextStyle(
-                                      fontFamily: "Sp",
-                                      color: Colors.white,
-                                      fontWeight: FontWeight.w600),
-                                ),
-                          ElevatedButton.icon(
-                              onPressed: logout,
-                              style: ButtonStyle(
-                                  backgroundColor: MaterialStateProperty.all(
-                                      Colors.transparent)),
-                              icon: const Icon(
-                                Icons.logout,
-                                color: Colors.white,
+              backgroundColor: Colors.black,
+              appBar: AppBar(
+                title: Column(children: [
+                  Padding(
+                    padding: const EdgeInsets.only(top: 15),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        username == ""
+                            ? spinkit
+                            : Text(
+                                "Good {obj} $username",
+                                style: const TextStyle(
+                                    fontFamily: "Sp",
+                                    color: Colors.white,
+                                    fontWeight: FontWeight.w600),
                               ),
-                              label: const Text(""))
-                        ],
-                      ),
+                        ElevatedButton.icon(
+                            onPressed: logout,
+                            style: ButtonStyle(
+                                backgroundColor: MaterialStateProperty.all(
+                                    Colors.transparent)),
+                            icon: const Icon(
+                              Icons.logout,
+                              color: Colors.white,
+                            ),
+                            label: const Text("")),
+                      ],
                     ),
                   ),
-                  backgroundColor: Colors.black,
-                  elevation: 0,
-                  automaticallyImplyLeading: false,
-                ),
-                body: ListView.builder(
-                  itemCount: schedule.length,
-                  itemBuilder: (context, index) {
-                    return Text(
-                      '$schedule[index]',
-                      style: const TextStyle(color: Colors.white),
-                    );
-                  },
-                ));
+                ]),
+                backgroundColor: Colors.black,
+                elevation: 0,
+                automaticallyImplyLeading: false,
+              ),
+              body: SchedulePage(schedule),
+            );
           } else {
             return const Text("failed");
           }
