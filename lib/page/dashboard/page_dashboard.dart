@@ -1,7 +1,8 @@
+import 'dart:io';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
-import 'package:unai_reminder/model/model_schedule.dart';
 import 'package:unai_reminder/repository/repo_authentication.dart';
 import 'package:unai_reminder/repository/repo_dashboard.dart';
 
@@ -16,9 +17,10 @@ class DashboardPage extends StatefulWidget {
 
 class _DashboardPageState extends State<DashboardPage> {
   String _username = "";
-  List<ScheduleModel> _scheduleModel = List.empty(growable: true);
   UserRepository userRepo = UserRepository();
   DashboardRepository dashboardRepo = DashboardRepository();
+
+  List<List<String>> _scheduleData = List.empty(growable: true);
 
   var spinkit = const SpinKitWave(
     color: Colors.blue,
@@ -64,30 +66,66 @@ class _DashboardPageState extends State<DashboardPage> {
     return scheduleData;
   }
 
-  Future<List<List<String>>> showData() async {
-    var scheduleData = List.filled(6, <String>[]);
+  Future<List<List<String>>> retrieveData() async {
+    List<List<String>> scheduleData = List.empty(growable: true);
     scheduleData = await getData();
 
     if (scheduleData == []) {
-      setState(() {});
-    }
-
-    int start = 0;
-    int end = 0;
-    for (var i = 0; i < scheduleData.length; i++) {
-      var splitted = scheduleData[i];
-      if (splitted.isEmpty == true) {
-        var scheduleObj =
-            ScheduleModel("", "", "", "", "", "", "No schedule today!");
-        _scheduleModel.add(scheduleObj);
-        continue;
-      }
-
-      // var scheduleObj = ScheduleModel(sche, majorName, lectureName, time, sksAmount, isNoSchedule)
-      // print(splitted[i][0]);
+      setState(() {
+        _scheduleData = scheduleData;
+      });
     }
 
     return scheduleData;
+  }
+
+  Future<List<List<String>>> showData() async {
+    var scheduleData = await getData();
+    List<List<String>> schedules = [];
+    int start = 0;
+    int end = 0;
+    while (true) {
+      for (var i = 0; i < scheduleData.length; i++) {
+        if (scheduleData[i].isEmpty == true) {
+          continue;
+        }
+
+        var stringSchedule = scheduleData[i];
+        var splitted = stringSchedule[0].split("|");
+        var isMoreThanOneMajor = splitted.contains("conjunction");
+
+        if (isMoreThanOneMajor == true) {
+          for (var j = 0; j < splitted.length; j++) {
+            if (j == splitted.length - 1) {
+              schedules.add(splitted.sublist(start + 1));
+              start = 0;
+              end = 0;
+              break;
+            }
+
+            if (splitted[j] == "conjunction") {
+              end = j;
+              if (start == 0) {
+                var clearSchedule = splitted.sublist(start, end);
+                schedules.add(clearSchedule);
+                start = end;
+                end = 0;
+              } else {
+                var clearSchedule = splitted.sublist(start + 1, end);
+                schedules.add(clearSchedule);
+                start = end;
+                end = 0;
+                continue;
+              }
+            }
+          }
+        } else {
+          schedules.add(splitted);
+        }
+      }
+      print(schedules);
+      return schedules;
+    }
   }
 
   @override
@@ -135,8 +173,14 @@ class _DashboardPageState extends State<DashboardPage> {
                   elevation: 0,
                   automaticallyImplyLeading: false,
                 ),
-                body: const Center(
-                  child: Text("Will be Schedule place"),
+                body: ListView.builder(
+                  itemCount: schedule.length,
+                  itemBuilder: (context, index) {
+                    return Text(
+                      '$schedule[index]',
+                      style: const TextStyle(color: Colors.white),
+                    );
+                  },
                 ));
           } else {
             return const Text("failed");

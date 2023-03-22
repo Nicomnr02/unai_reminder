@@ -90,14 +90,15 @@ class UserAPI {
     if (existSchedule.isEmpty == false) {
       var currentSchedule = existSchedule[0];
       existSchedule = [];
-      var conjuctionVar = "conjuction";
+      var conjuctionVar = "conjunction";
       existSchedule.add(
-          '$currentSchedule|$conjuctionVar|$majorKey|$majorName|$lectureName|$time|$sksAmount');
+          '$currentSchedule|$conjuctionVar|$majorKey|$majorName|$lectureName|$time|$sksAmount|$day');
       dashRepo.write(day, existSchedule);
       return existSchedule;
     }
 
-    dashRepo.write(day, ['$majorKey|$majorName|$lectureName|$time|$sksAmount']);
+    dashRepo.write(
+        day, ['$majorKey|$majorName|$lectureName|$time|$sksAmount|$day']);
 
     return await dashRepo.read(day);
   }
