@@ -1,11 +1,10 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'package:unai_reminder/page/authentication/page_authentication.dart';
+
 import 'package:unai_reminder/page/dashboard/page_schedule.dart';
 import 'package:unai_reminder/repository/repo_authentication.dart';
 import 'package:unai_reminder/repository/repo_dashboard.dart';
-
-import '../authentication/page_authentication.dart';
 
 class DashboardPage extends StatefulWidget {
   const DashboardPage({super.key});
@@ -24,11 +23,32 @@ class _DashboardPageState extends State<DashboardPage> {
     size: 20.0,
   );
 
-  void logout() async {
-    userRepo.delete();
-
-    Navigator.of(context).pushReplacement(
-        CupertinoPageRoute(builder: (ctx) => const LoginPage()));
+  Future<Future<String?>> logout() async {
+    return showDialog<String>(
+      context: context,
+      builder: (BuildContext context) => AlertDialog(
+        title: const Text('Are you sure?'),
+        content: const Text(
+            'All the data will be remove and you have to login again later.'),
+        actions: <Widget>[
+          TextButton(
+            onPressed: () => Navigator.pop(context, 'Cancel'),
+            child: const Text('Cancel'),
+          ),
+          TextButton(
+            onPressed: () {
+              userRepo.delete();
+              Navigator.pushReplacement(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => const LoginPage(),
+                  ));
+            },
+            child: const Text('OK'),
+          ),
+        ],
+      ),
+    );
   }
 
   Future<String> getUserName() async {
@@ -123,61 +143,72 @@ class _DashboardPageState extends State<DashboardPage> {
     }
   }
 
-  String getTimeForProperGreeting(){
+  String greeting() {
     var time = DateTime.now();
-    return "";
-    //Todo : finish this!
+    var hour = time.hour;
+
+    if (hour > 10 && hour < 12) {
+      return "Good afternoon,";
+    } else if (hour > 12 && hour < 24) {
+      return ("Good evening,");
+    } else {
+      return "Good morning,";
+    }
   }
 
   @override
   Widget build(BuildContext context) {
     return FutureBuilder(
-        future: Future.wait([getUserName(), showData()]),
-        builder: (context, AsyncSnapshot<dynamic> snapshot) {
-          if (snapshot.hasData) {
-            final username = snapshot.data[0] as String;
-            final schedule = snapshot.data[1] as List<List<String>>;
-            return Scaffold(
-              backgroundColor: Colors.black,
-              appBar: AppBar(
-                title: Column(children: [
-                  Padding(
-                    padding: const EdgeInsets.only(top: 15),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        username == ""
-                            ? spinkit
-                            : Text(
-                                "Good {obj} $username",
-                                style: const TextStyle(
-                                    fontFamily: "Sp",
-                                    color: Colors.white,
-                                    fontWeight: FontWeight.w600),
+      future: Future.wait([getUserName(), showData()]),
+      builder: (context, AsyncSnapshot<dynamic> snapshot) {
+        if (snapshot.hasData) {
+          final username = snapshot.data[0] as String;
+          final schedule = snapshot.data[1] as List<List<String>>;
+          final greet = greeting();
+          return Scaffold(
+            backgroundColor: Colors.black,
+            appBar: AppBar(
+              title: Column(children: [
+                Padding(
+                  padding: const EdgeInsets.only(top: 5),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      username == ""
+                          ? spinkit
+                          : Text(
+                              "$greet $username!",
+                              style: const TextStyle(
+                                fontFamily: "Sp",
+                                color: Colors.white,
+                                fontWeight: FontWeight.w600,
+                                fontSize: 15,
                               ),
-                        ElevatedButton.icon(
-                            onPressed: logout,
-                            style: ButtonStyle(
-                                backgroundColor: MaterialStateProperty.all(
-                                    Colors.transparent)),
-                            icon: const Icon(
-                              Icons.logout,
-                              color: Colors.white,
                             ),
-                            label: const Text("")),
-                      ],
-                    ),
+                      ElevatedButton.icon(
+                          onPressed: logout,
+                          style: ButtonStyle(
+                              backgroundColor: MaterialStateProperty.all(
+                                  Colors.transparent)),
+                          icon: const Icon(
+                            Icons.logout,
+                            color: Colors.white,
+                          ),
+                          label: const Text("")),
+                    ],
                   ),
-                ]),
-                backgroundColor: Colors.black,
-                elevation: 0,
-                automaticallyImplyLeading: false,
-              ),
-              body: SchedulePage(schedule),
-            );
-          } else {
-            return const Text("failed");
-          }
-        });
+                ),
+              ]),
+              backgroundColor: Colors.black,
+              elevation: 0,
+              automaticallyImplyLeading: false,
+            ),
+            body: SchedulePage(schedule),
+          );
+        } else {
+          return const Text("failed");
+        }
+      },
+    );
   }
 }

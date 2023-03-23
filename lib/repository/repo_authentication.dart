@@ -7,7 +7,7 @@ class UserRepository {
     final prefs = await db.initDB();
     await prefs.setString(key, val);
     var data = await read("_cookie");
-    print("data berisi?? --> $data");
+    print("cookie: $data");
     return;
   }
 

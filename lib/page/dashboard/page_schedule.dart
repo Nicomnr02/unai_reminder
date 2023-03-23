@@ -16,9 +16,11 @@ class SchedulePage extends StatefulWidget {
 class _SchedulePageState extends State<SchedulePage> {
   List<List<String>> choosenSchedule = [];
   List<List<String>> todaySchedule = [];
+  int _selectedIdx = -1;
   bool _isFirstOpen = true;
+  late FocusNode myFocusNode;
 
-  var spinkit = const SpinKitPianoWave(
+  var spinkit = const SpinKitThreeInOut(
     color: Colors.blue,
     size: 20.0,
   );
@@ -67,7 +69,6 @@ class _SchedulePageState extends State<SchedulePage> {
       for (var i = 0; i < scheduleList.length; i++) {
         if (scheduleList[i][5] == "M.") {
           choosenSchedule.add(scheduleList[i]);
-          var y = choosenSchedule;
           continue;
         } else {
           continue;
@@ -81,7 +82,6 @@ class _SchedulePageState extends State<SchedulePage> {
       for (var i = 0; i < scheduleList.length; i++) {
         if (scheduleList[i][5] == "T.") {
           choosenSchedule.add(scheduleList[i]);
-          var y = choosenSchedule;
           continue;
         } else {
           continue;
@@ -95,7 +95,6 @@ class _SchedulePageState extends State<SchedulePage> {
       for (var i = 0; i < scheduleList.length; i++) {
         if (scheduleList[i][5] == "W.") {
           choosenSchedule.add(scheduleList[i]);
-          var y = choosenSchedule;
           continue;
         } else {
           continue;
@@ -109,7 +108,6 @@ class _SchedulePageState extends State<SchedulePage> {
       for (var i = 0; i < scheduleList.length; i++) {
         if (scheduleList[i][5] == "Th.") {
           choosenSchedule.add(scheduleList[i]);
-          var y = choosenSchedule;
           continue;
         } else {
           continue;
@@ -123,7 +121,6 @@ class _SchedulePageState extends State<SchedulePage> {
       for (var i = 0; i < scheduleList.length; i++) {
         if (scheduleList[i][5] == "F.") {
           choosenSchedule.add(scheduleList[i]);
-          var y = choosenSchedule;
           continue;
         } else {
           continue;
@@ -137,7 +134,6 @@ class _SchedulePageState extends State<SchedulePage> {
       for (var i = 0; i < scheduleList.length; i++) {
         if (scheduleList[i][5] == "S.") {
           choosenSchedule.add(scheduleList[i]);
-          var y = choosenSchedule;
           continue;
         } else {
           continue;
@@ -254,6 +250,23 @@ class _SchedulePageState extends State<SchedulePage> {
     return todaySchedule;
   }
 
+  List<String?> getDayAndMonthName() {
+    const Map<int, String> weekdayName = {
+      1: "Monday",
+      2: "Tuesday",
+      3: "Wednesday",
+      4: "Thursday",
+      5: "Friday",
+      6: "Saturday",
+      7: "Sunday"
+    };
+
+    var day = weekdayName[DateTime.now().weekday];
+    var dayInt = DateTime.now().day;
+
+    return [day, dayInt.toString()];
+  }
+
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -272,23 +285,43 @@ class _SchedulePageState extends State<SchedulePage> {
                       getChoosenSchedule(getAmountDayInCurrentMonth()[index]);
                       setState(() {
                         _isFirstOpen = false;
+                        if (_selectedIdx == index) {
+                          _selectedIdx = -1;
+                        } else {
+                          _selectedIdx = index;
+                        }
                       });
                     },
                     child: index == 0
                         ? Row(
-                            children: const [
+                            children: [
                               Padding(
-                                padding: EdgeInsets.only(left: 10),
-                                child: Text(
-                                  'TODAY ',
-                                  style: TextStyle(
-                                      color: Colors.white,
-                                      fontFamily: "Sp",
-                                      fontSize: 40,
-                                      fontWeight: FontWeight.w600),
-                                ),
-                              ),
-                              Padding(
+                                  padding:
+                                      const EdgeInsets.only(left: 10, top: 14 ),
+                                  child: Column(
+                                    children: [
+                                      Text(
+                                        "${getDayAndMonthName()[0]} ${getDayAndMonthName()[1]}",
+                                        style: const TextStyle(
+                                            color: Colors.white,
+                                            fontFamily: "Sp",
+                                            fontSize: 10,
+                                            fontWeight: FontWeight.w600),
+                                        textAlign: TextAlign.left,
+                                      ),
+                                      Text(
+                                        'TODAY ',
+                                        style: TextStyle(
+                                            color: Colors.white,
+                                            fontFamily: "Sp",
+                                            fontSize: 40,
+                                            fontWeight: index == _selectedIdx
+                                                ? FontWeight.w600
+                                                : FontWeight.w300),
+                                      ),
+                                    ],
+                                  )),
+                              const Padding(
                                   padding: EdgeInsets.only(right: 10),
                                   child: Icon(
                                     Icons.access_time_filled,
@@ -298,8 +331,10 @@ class _SchedulePageState extends State<SchedulePage> {
                           )
                         : Text(
                             '${getAmountDayInCurrentMonth()[index].toString()}  ',
-                            style: const TextStyle(
-                                color: Colors.white,
+                            style: TextStyle(
+                                color: index == _selectedIdx
+                                    ? Colors.red
+                                    : Colors.white,
                                 fontFamily: "Sp",
                                 fontSize: 40)),
                   )
@@ -317,13 +352,13 @@ class _SchedulePageState extends State<SchedulePage> {
                   itemCount: todaySchedule.length,
                   itemBuilder: (context, index) {
                     return SizedBox(
-                      height: 350,
+                      height: 250,
                       child: Card(
                         color: schedulebackground[
                             Random().nextInt(schedulebackground.length - 1)],
                         borderOnForeground: true,
                         shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(10),
+                          borderRadius: BorderRadius.circular(35),
                         ),
                         child: ListTile(
                           title: Center(

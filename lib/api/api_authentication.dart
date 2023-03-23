@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:developer';
 import 'package:html/dom.dart' as dom;
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
