@@ -28,8 +28,7 @@ class _DashboardPageState extends State<DashboardPage> {
       context: context,
       builder: (BuildContext context) => AlertDialog(
         title: const Text('Are you sure?'),
-        content: const Text(
-            'All the data will be remove and you have to login again later.'),
+        content: const Text('All the schedule\'s data will be delete.'),
         actions: <Widget>[
           TextButton(
             onPressed: () => Navigator.pop(context, 'Cancel'),
@@ -148,11 +147,11 @@ class _DashboardPageState extends State<DashboardPage> {
     var hour = time.hour;
 
     if (hour > 10 && hour < 12) {
-      return "Good afternoon,";
+      return "Good Afternoon,";
     } else if (hour > 12 && hour < 24) {
-      return ("Good evening,");
+      return ("Good Evening,");
     } else {
-      return "Good morning,";
+      return "Good Morning,";
     }
   }
 

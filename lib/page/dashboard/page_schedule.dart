@@ -297,7 +297,7 @@ class _SchedulePageState extends State<SchedulePage> {
                             children: [
                               Padding(
                                   padding:
-                                      const EdgeInsets.only(left: 10, top: 14 ),
+                                      const EdgeInsets.only(left: 10, top: 14),
                                   child: Column(
                                     children: [
                                       Text(
@@ -317,7 +317,9 @@ class _SchedulePageState extends State<SchedulePage> {
                                             fontSize: 40,
                                             fontWeight: index == _selectedIdx
                                                 ? FontWeight.w600
-                                                : FontWeight.w300),
+                                                : _isFirstOpen == true
+                                                    ? FontWeight.w600
+                                                    : FontWeight.w300),
                                       ),
                                     ],
                                   )),
@@ -385,9 +387,10 @@ class _SchedulePageState extends State<SchedulePage> {
                                         MainAxisAlignment.spaceAround,
                                     children: [
                                       Text(
-                                        '${todaySchedule[index][0]} | ${todaySchedule[index][2]}',
+                                        '${todaySchedule[index][0]} | ${todaySchedule[index][2]} | ${todaySchedule[index][3]} ',
                                         style: const TextStyle(
-                                            fontWeight: FontWeight.w200),
+                                            fontWeight: FontWeight.w300,
+                                            fontSize: 13),
                                       ),
                                     ],
                                   ),
@@ -404,14 +407,14 @@ class _SchedulePageState extends State<SchedulePage> {
                   : todaySchedule.isEmpty == true
                       ? const Center(
                           child: Text(
-                            "No schedule today, have a nice day <3",
+                            "No schedule, have a nice day <3",
                             style: TextStyle(color: Colors.white),
                           ),
                         )
                       : choosenSchedule.isEmpty == true
                           ? const Center(
                               child: Text(
-                                "No schedule today, have a nice day <3",
+                                "No schedule, have a nice day <3",
                                 style: TextStyle(color: Colors.white),
                               ),
                             )

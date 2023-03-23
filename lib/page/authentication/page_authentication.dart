@@ -1,5 +1,3 @@
-// ignore_for_file: unrelated_type_equality_checks
-
 import 'package:flutter/material.dart';
 import 'package:unai_reminder/page/introduction/page_welcome.dart';
 
@@ -19,7 +17,7 @@ class _LoginPageState extends State<LoginPage> {
   TextEditingController passwordEditingController = TextEditingController();
   bool _passwordVisible = true;
   bool _isTapping = false;
-  Color _textFieldColor = Colors.white10;
+  final Color _textFieldColor = Colors.white10;
   void submit(BuildContext context) async {
     setState(() {
       var usernameDataInput = usernameEditingController.text;

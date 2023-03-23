@@ -161,6 +161,7 @@ class UserAPI {
 
     getDataFromServer(cookie);
 
+    // ignore: use_build_context_synchronously
     Navigator.pushReplacement(context,
         MaterialPageRoute(builder: (context) => Screen(responseString)));
   }
