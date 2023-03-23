@@ -162,7 +162,7 @@ class UserAPI {
 
     getDataFromServer(cookie);
 
-    Navigator.push(context,
+    Navigator.pushReplacement(context,
         MaterialPageRoute(builder: (context) => Screen(responseString)));
   }
 

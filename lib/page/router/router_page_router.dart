@@ -10,7 +10,6 @@ class Screen extends StatelessWidget {
   Screen(this.responseString, {super.key});
 
   UserRepository usrData = UserRepository();
-  ResponseMessage responseMsg = ResponseMessage();
 
   Future<String?> isLogin() async {
     var data = await usrData.read("_cookie");
@@ -35,16 +34,14 @@ class Screen extends StatelessWidget {
                 var rspNoInternet = "Lost internet!";
                 if (responseString ==
                     'Please check your internet connection!') {
-                  return responseMsg.errorPageBuilder(context, rspNoInternet);
+                  return ResponseMessage(rspNoInternet);
                 } else if (snapshot.error != null) {
-                  return responseMsg.errorPageBuilder(
-                      context, snapshot.error.toString());
+                  return ResponseMessage(snapshot.error.toString());
                 } else if (snapshot.data == "" && responseString == "") {
                   return const IntroductionPage();
                 } else if (snapshot.data == "") {
-                  return responseMsg.errorPageBuilder(context, responseString);
+                  return ResponseMessage(responseString);
                 } else {
-                  print('kuki bapak kau = ${snapshot.data}');
                   return const DashboardPage();
                 }
               },

@@ -1,7 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:unai_reminder/page/authentication/page_authentication.dart';
 
-class ResponseMessage {
-  Widget errorPageBuilder(BuildContext context, String msg) {
+// ignore: must_be_immutable
+class ResponseMessage extends StatelessWidget {
+  String msg;
+  ResponseMessage(this.msg, {super.key});
+
+  @override
+  Widget build(BuildContext context) {
     return Scaffold(
       appBar: null,
       backgroundColor: Colors.black87,
@@ -32,7 +38,13 @@ class ResponseMessage {
                   ),
                   const SizedBox(height: 20),
                   ElevatedButton(
-                      onPressed: () => {Navigator.of(context).pop()},
+                      onPressed: () => {
+                            Navigator.pushReplacement(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => const LoginPage(),
+                                ))
+                          },
                       child: const Text("OK"))
                 ],
               ),
@@ -41,37 +53,3 @@ class ResponseMessage {
     );
   }
 }
-
-
-
-
-// class ResponseMessage {
-//   Future successRsp(BuildContext context, String successMsg) {
-//     return 
-//     });
-//   }
-
-//   Future<Widget> erorrResp(BuildContext context, String errMsg) {
-//     return Future.delayed(Duration.zero, () async {
-//       return Container(
-//           child: await QuickAlert.show(
-//         context: context,
-//         type: QuickAlertType.error,
-//         title: "Oops..",
-//         text: errMsg,
-//       ));
-//     });
-//   }
-
-//   Future noInternetRsp(BuildContext context, String errMsg) {
-//     return Future.delayed(Duration.zero, () {
-//       //your code goes here
-//       QuickAlert.show(
-//         context: context,
-//         type: QuickAlertType.warning,
-//         title: "No Internet Connection",
-//         text: errMsg,
-//       );
-//     });
-//   }
-// }

@@ -45,6 +45,7 @@ dependencies:
   connectivity: ^3.0.6
   quickalert: ^1.0.1
   internet_connection_checker: ^1.0.0+1
+  intl: ^0.18.0
 
 dev_dependencies:
   flutter_test:
