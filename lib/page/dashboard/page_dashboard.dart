@@ -19,7 +19,7 @@ class _DashboardPageState extends State<DashboardPage> {
   UserRepository userRepo = UserRepository();
   DashboardRepository dashboardRepo = DashboardRepository();
 
-  var spinkit = const SpinKitWave(
+  var spinkit = const SpinKitThreeBounce(
     color: Colors.blue,
     size: 20.0,
   );
@@ -121,6 +121,12 @@ class _DashboardPageState extends State<DashboardPage> {
       print(schedules);
       return schedules;
     }
+  }
+
+  String getTimeForProperGreeting(){
+    var time = DateTime.now();
+    return "";
+    //Todo : finish this!
   }
 
   @override

@@ -26,9 +26,7 @@ class _SchedulePageState extends State<SchedulePage> {
     Colors.lightGreen,
     Colors.lightBlue,
     Colors.yellow,
-    const Color.fromARGB(255, 192, 126, 204),
-    Colors.amberAccent,
-    Colors.deepOrange,
+    const Color.fromARGB(255, 202, 166, 209),
   ];
 
   List<String> getAmountDayInCurrentMonth() {
@@ -318,123 +316,127 @@ class _SchedulePageState extends State<SchedulePage> {
                   shrinkWrap: true,
                   itemCount: todaySchedule.length,
                   itemBuilder: (context, index) {
-                    if (todaySchedule.isEmpty == true) {
-                      return const Center(
-                        child: Text("No schedule today, have a nice day <3"),
-                      );
-                    } else {
-                      return SizedBox(
-                        height: 350,
-                        child: Card(
-                          color: schedulebackground[
-                              Random().nextInt(schedulebackground.length - 1)],
-                          borderOnForeground: true,
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(10),
-                          ),
-                          child: ListTile(
-                            title: Center(
-                              child: Column(
-                                children: [
-                                  const Padding(
-                                      padding: EdgeInsets.only(top: 80)),
-                                  Center(
-                                    child: Text(
-                                      todaySchedule[index][1],
-                                      style: const TextStyle(
-                                          color: Colors.black,
-                                          letterSpacing: 3,
-                                          fontFamily: 'Sp',
-                                          fontWeight: FontWeight.w600,
-                                          fontSize: 30),
-                                    ),
+                    return SizedBox(
+                      height: 350,
+                      child: Card(
+                        color: schedulebackground[
+                            Random().nextInt(schedulebackground.length - 1)],
+                        borderOnForeground: true,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                        child: ListTile(
+                          title: Center(
+                            child: Column(
+                              children: [
+                                const Padding(
+                                    padding: EdgeInsets.only(top: 80)),
+                                Center(
+                                  child: Text(
+                                    todaySchedule[index][1],
+                                    style: const TextStyle(
+                                        color: Colors.black,
+                                        letterSpacing: 3,
+                                        fontFamily: 'Sp',
+                                        fontWeight: FontWeight.w600,
+                                        fontSize: 30),
                                   ),
-                                  const Padding(
-                                      padding: EdgeInsets.only(top: 30)),
-                                  Center(
-                                    child: Column(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.spaceAround,
-                                      children: [
-                                        Text(
-                                          '${todaySchedule[index][0]} | ${todaySchedule[index][2]}',
-                                          style: const TextStyle(
-                                              fontWeight: FontWeight.w200),
-                                        ),
-                                      ],
-                                    ),
-                                  )
-                                ],
-                              ),
+                                ),
+                                const Padding(
+                                    padding: EdgeInsets.only(top: 30)),
+                                Center(
+                                  child: Column(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceAround,
+                                    children: [
+                                      Text(
+                                        '${todaySchedule[index][0]} | ${todaySchedule[index][2]}',
+                                        style: const TextStyle(
+                                            fontWeight: FontWeight.w200),
+                                      ),
+                                    ],
+                                  ),
+                                )
+                              ],
                             ),
                           ),
                         ),
-                      );
-                    }
+                      ),
+                    );
                   })
-              : todaySchedule.isEmpty == true
+              : todaySchedule.isEmpty == true && _isFirstOpen == true
                   ? spinkit
-                  : ListView.builder(
-                      scrollDirection: Axis.vertical,
-                      shrinkWrap: true,
-                      itemCount: choosenSchedule.length,
-                      itemBuilder: (context, index) {
-                        if (todaySchedule.isEmpty == true) {
-                          return const Center(
-                            child:
-                                Text("No schedule today, have a nice day <3"),
-                          );
-                        } else {
-                          return SizedBox(
-                            height: 350,
-                            child: Card(
-                              color: schedulebackground[Random()
-                                  .nextInt(schedulebackground.length - 1)],
-                              borderOnForeground: true,
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(10),
+                  : todaySchedule.isEmpty == true
+                      ? const Center(
+                          child: Text(
+                            "No schedule today, have a nice day <3",
+                            style: TextStyle(color: Colors.white),
+                          ),
+                        )
+                      : choosenSchedule.isEmpty == true
+                          ? const Center(
+                              child: Text(
+                                "No schedule today, have a nice day <3",
+                                style: TextStyle(color: Colors.white),
                               ),
-                              child: ListTile(
-                                title: Center(
-                                  child: Column(
-                                    children: [
-                                      const Padding(
-                                          padding: EdgeInsets.only(top: 80)),
-                                      Center(
-                                        child: Text(
-                                          choosenSchedule[index][1],
-                                          style: const TextStyle(
-                                              color: Colors.black,
-                                              letterSpacing: 3,
-                                              fontFamily: 'Sp',
-                                              fontWeight: FontWeight.w600,
-                                              fontSize: 30),
-                                        ),
-                                      ),
-                                      const Padding(
-                                          padding: EdgeInsets.only(top: 30)),
-                                      Center(
+                            )
+                          : ListView.builder(
+                              scrollDirection: Axis.vertical,
+                              shrinkWrap: true,
+                              itemCount: choosenSchedule.length,
+                              itemBuilder: (context, index) {
+                                return SizedBox(
+                                  height: 350,
+                                  child: Card(
+                                    color: schedulebackground[Random().nextInt(
+                                        schedulebackground.length - 1)],
+                                    borderOnForeground: true,
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(10),
+                                    ),
+                                    child: ListTile(
+                                      title: Center(
                                         child: Column(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.spaceAround,
                                           children: [
-                                            Text(
-                                              '${choosenSchedule[index][0]} | ${choosenSchedule[index][2]}',
-                                              style: const TextStyle(
-                                                  fontWeight: FontWeight.w200),
+                                            const Padding(
+                                                padding:
+                                                    EdgeInsets.only(top: 80)),
+                                            Center(
+                                              child: Text(
+                                                choosenSchedule[index][1],
+                                                style: const TextStyle(
+                                                    color: Colors.black,
+                                                    letterSpacing: 3,
+                                                    fontFamily: 'Sp',
+                                                    fontWeight: FontWeight.w600,
+                                                    fontSize: 30),
+                                              ),
                                             ),
+                                            const Padding(
+                                                padding:
+                                                    EdgeInsets.only(top: 30)),
+                                            Center(
+                                              child: Column(
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment
+                                                        .spaceAround,
+                                                children: [
+                                                  Text(
+                                                    '${choosenSchedule[index][0]} | ${choosenSchedule[index][2]}',
+                                                    style: const TextStyle(
+                                                        fontWeight:
+                                                            FontWeight.w200),
+                                                  ),
+                                                ],
+                                              ),
+                                            )
                                           ],
                                         ),
-                                      )
-                                    ],
+                                      ),
+                                    ),
                                   ),
-                                ),
-                              ),
-                            ),
-                          );
-                        }
-                      },
-                    ),
+                                );
+                              }),
         )
       ],
     );
