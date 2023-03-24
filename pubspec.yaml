@@ -45,7 +45,8 @@ dependencies:
   connectivity: ^3.0.6
   internet_connection_checker: ^1.0.0+1
   intl: ^0.18.0
-  flutter_background_service: ^2.4.6
+  flutter_local_notifications: ^12.0.4
+  timezone: ^0.9.0
 
 dev_dependencies:
   flutter_test:

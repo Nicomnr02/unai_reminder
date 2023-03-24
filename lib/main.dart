@@ -3,9 +3,12 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:unai_reminder/page/introduction/page_splash.dart';
 import 'package:unai_reminder/utils/utils_db.dart';
+import 'package:timezone/data/latest.dart' as tz;
 
 void main() async {
   DB();
+  tz.initializeTimeZones();
+  
   WidgetsFlutterBinding.ensureInitialized();
   GestureBinding.instance.resamplingEnabled = true;
   HttpOverrides.global = MyHttpOverrides();

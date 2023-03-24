@@ -1,8 +1,11 @@
+import 'dart:io';
 import 'dart:math';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:intl/intl.dart';
 
 import 'package:flutter/material.dart';
+import 'package:unai_reminder/page/router/router_alarm.dart';
 
 // ignore: must_be_immutable
 class SchedulePage extends StatefulWidget {
@@ -267,6 +270,18 @@ class _SchedulePageState extends State<SchedulePage> {
     return [day, dayInt.toString()];
   }
 
+  List<List<String>> sendTodayScheduleToAlarm(List<List<String>> scheduleData) {
+    sleep(const Duration(seconds: 10));
+    if (scheduleData.isEmpty == true) {
+      print("no data sended to alarm page");
+      return [
+        ["No schedule, have a nice day!"]
+      ];
+    }
+    print("success sended data to alarm page : $scheduleData");
+    return scheduleData;
+  }
+
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -353,6 +368,8 @@ class _SchedulePageState extends State<SchedulePage> {
                   shrinkWrap: true,
                   itemCount: todaySchedule.length,
                   itemBuilder: (context, index) {
+                    print('today schedule after build: $todaySchedule');
+                    AlarmRouter().alarm.setNotifInterval();
                     return SizedBox(
                       height: 250,
                       child: Card(
@@ -394,7 +411,7 @@ class _SchedulePageState extends State<SchedulePage> {
                                       ),
                                     ],
                                   ),
-                                )
+                                ),
                               ],
                             ),
                           ),
@@ -460,6 +477,7 @@ class _SchedulePageState extends State<SchedulePage> {
                                                     fontWeight:
                                                         FontWeight.w200),
                                               ),
+                                              // !HERE ALARM ----------------
                                             ],
                                           ),
                                         )
