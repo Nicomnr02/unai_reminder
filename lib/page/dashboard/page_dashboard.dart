@@ -23,10 +23,10 @@ class _DashboardPageState extends State<DashboardPage> {
     size: 20.0,
   );
 
-  Future<Future<String?>> logout() async {
+  Future<Future<String?>> logout(BuildContext ctx) async {
     return showDialog<String>(
-      context: context,
-      builder: (BuildContext context) => AlertDialog(
+      context: ctx,
+      builder: (ctx) => AlertDialog(
         title: const Text('Are you sure?'),
         content: const Text('All the schedule\'s data will be delete.'),
         actions: <Widget>[
@@ -37,11 +37,10 @@ class _DashboardPageState extends State<DashboardPage> {
           TextButton(
             onPressed: () {
               userRepo.delete();
-              Navigator.pushReplacement(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => const LoginPage(),
-                  ));
+              Navigator.pop(context);
+              Navigator.of(ctx).pushReplacement(MaterialPageRoute(
+                builder: (ctx) => const LoginPage(),
+              ));
             },
             child: const Text('OK'),
           ),
@@ -185,7 +184,9 @@ class _DashboardPageState extends State<DashboardPage> {
                               ),
                             ),
                       ElevatedButton.icon(
-                          onPressed: logout,
+                          onPressed: () {
+                            logout(context);
+                          },
                           style: ButtonStyle(
                               backgroundColor: MaterialStateProperty.all(
                                   Colors.transparent)),
