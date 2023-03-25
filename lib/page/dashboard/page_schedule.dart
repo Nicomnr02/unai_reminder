@@ -4,7 +4,6 @@ import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:intl/intl.dart';
 
 import 'package:flutter/material.dart';
-import 'package:unai_reminder/page/router/router_alarm.dart';
 
 // ignore: must_be_immutable
 class SchedulePage extends StatefulWidget {
@@ -301,14 +300,13 @@ class _SchedulePageState extends State<SchedulePage> {
                       }
                       getChoosenSchedule(getAmountDayInCurrentMonth()[index]);
 
-                      setState(() {
-                        _isFirstOpen = false;
-                        if (_selectedIdx == index) {
-                          _selectedIdx = -1;
-                        } else {
-                          _selectedIdx = index;
-                        }
-                      });
+                      _isFirstOpen = false;
+                      if (_selectedIdx == index) {
+                        _selectedIdx = -1;
+                      } else {
+                        _selectedIdx = index;
+                      }
+                      setState(() {});
                     },
                     child: index == 0
                         ? Row(
