@@ -1,14 +1,21 @@
 import 'dart:io';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:unai_reminder/page/introduction/page_splash.dart';
+import 'package:unai_reminder/utils/utils_alarm.dart';
+
 import 'package:unai_reminder/utils/utils_db.dart';
 import 'package:timezone/data/latest.dart' as tz;
+
+import 'page/dashboard/page_alarm.dart';
+
+final fln = FlutterLocalNotificationsPlugin();
+final alarmUtil = AlarmUtils([]);
 
 void main() async {
   DB();
   tz.initializeTimeZones();
-  
   WidgetsFlutterBinding.ensureInitialized();
   GestureBinding.instance.resamplingEnabled = true;
   HttpOverrides.global = MyHttpOverrides();
@@ -23,6 +30,12 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
+  @override
+  void initState() {
+    super.initState();
+    alarmUtil.initAlarm(context, fln);
+  }
+
   @override
   Widget build(BuildContext context) {
     return GestureDetector(

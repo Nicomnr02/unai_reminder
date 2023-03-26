@@ -4,11 +4,14 @@ import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:intl/intl.dart';
 
 import 'package:flutter/material.dart';
+import 'package:unai_reminder/main.dart';
+import 'package:unai_reminder/utils/utils_alarm.dart';
 
 // ignore: must_be_immutable
 class SchedulePage extends StatefulWidget {
   List<List<String>> schedule = [];
-  SchedulePage(this.schedule, {super.key});
+  String username = "";
+  SchedulePage(this.schedule, this.username, {super.key});
 
   @override
   State<SchedulePage> createState() => _SchedulePageState();
@@ -20,7 +23,7 @@ class _SchedulePageState extends State<SchedulePage> {
   int _selectedIdx = -1;
   bool _isFirstOpen = true;
   bool _isNoScheduleToday = false;
-  late FocusNode myFocusNode;
+  bool _isNotifShowOneTime = false;
 
   var spinkit = const SpinKitThreeInOut(
     color: Colors.blue,
@@ -281,6 +284,20 @@ class _SchedulePageState extends State<SchedulePage> {
 
   @override
   Widget build(BuildContext context) {
+    if (getTodaySchedule().isEmpty == true && _isNotifShowOneTime == false) {
+      _isNotifShowOneTime = true;
+      Future.delayed(
+        const Duration(seconds: 5),
+        () {
+          alarmUtil.setNotifOneShot(
+              "0",
+              "No schedule",
+              "Hi ${widget.username}!",
+              "Looks like you don't have any schedule today, but please be stay productive yaa?");
+        },
+      );
+    }
+
     return Column(
       children: [
         Expanded(
@@ -306,6 +323,8 @@ class _SchedulePageState extends State<SchedulePage> {
                       } else {
                         _selectedIdx = index;
                       }
+
+                      _isNotifShowOneTime;
                       setState(() {});
                     },
                     child: index == 0
@@ -370,7 +389,7 @@ class _SchedulePageState extends State<SchedulePage> {
                     itemCount: todaySchedule.length,
                     itemBuilder: (context, index) {
                       print('today schedule after build: $todaySchedule');
-                      // AlarmRouter().alarm.setNotifInterval();
+                      AlarmUtils(getTodaySchedule());
                       return SizedBox(
                         height: 250,
                         child: Card(
@@ -433,6 +452,9 @@ class _SchedulePageState extends State<SchedulePage> {
                         itemCount: choosenSchedule.length,
                         itemBuilder: (context, index) {
                           _isNoScheduleToday = true;
+
+                          AlarmUtils(choosenSchedule);
+
                           return SizedBox(
                             height: 250,
                             child: Card(

@@ -223,7 +223,7 @@ class _DashboardPageState extends State<DashboardPage> {
               elevation: 0,
               automaticallyImplyLeading: false,
             ),
-            body: SchedulePage(schedule),
+            body: SchedulePage(schedule, username),
           );
         } else {
           return const Text("failed");

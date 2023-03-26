@@ -81,7 +81,8 @@ class UserAPI {
         .sublist(pointerToLectureName + 1, pointerTodata - 1)
         .join(" "));
 
-    var time = splitted[pointerTodata + 5];
+    var temp = splitted[pointerTodata + 5];
+    var time = temp[0] + temp[1];
 
     var sksAmount = splitted[pointerTodata + 2];
 
