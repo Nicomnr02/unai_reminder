@@ -12,6 +12,7 @@ import 'page/dashboard/page_alarm.dart';
 
 final fln = FlutterLocalNotificationsPlugin();
 final alarmUtil = AlarmUtils([]);
+final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 
 void main() async {
   DB();
@@ -46,10 +47,11 @@ class _MyAppState extends State<MyApp> {
             currentFocus.unfocus();
           }
         },
-        child: const MaterialApp(
+        child: MaterialApp(
           //still checking caous its cons
+          navigatorKey: navigatorKey,
           debugShowCheckedModeBanner: false,
-          home: SplashPage(),
+          home: const SplashPage(),
         ));
   }
 }

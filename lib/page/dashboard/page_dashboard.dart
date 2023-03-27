@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'package:unai_reminder/main.dart';
 import 'package:unai_reminder/page/authentication/page_authentication.dart';
 
 import 'package:unai_reminder/page/dashboard/page_schedule.dart';
@@ -37,6 +38,7 @@ class _DashboardPageState extends State<DashboardPage> {
           TextButton(
             onPressed: () {
               userRepo.delete();
+              fln.cancelAll();
               Navigator.pop(context);
               Navigator.of(ctx).pushReplacement(MaterialPageRoute(
                 builder: (ctx) => const LoginPage(),

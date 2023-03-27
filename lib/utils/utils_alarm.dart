@@ -1,9 +1,11 @@
-import 'dart:io';
+import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:timezone/timezone.dart' as tz;
 import 'package:unai_reminder/main.dart';
+import 'package:unai_reminder/model/model_alarm.dart';
+import 'package:unai_reminder/page/dashboard/page_alarm.dart';
 
 class AlarmUtils {
   List<List<String>> todaySchedule = [];
@@ -23,6 +25,15 @@ class AlarmUtils {
     print('sorted : $todaySchedule');
   }
 
+  Future<dynamic> onSelectNotification(payload) async {
+    if (payload != "") {
+      var triggerSchedule = AlarmModel().newAlarmModel(payload!);
+      navigatorKey.currentState!.push(
+        MaterialPageRoute(builder: (context) => AlarmPage(triggerSchedule)),
+      );
+    }
+  }
+
   Future<void> initAlarm(BuildContext context,
       FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin) async {
     WidgetsFlutterBinding.ensureInitialized();
@@ -40,9 +51,9 @@ class AlarmUtils {
       onDidReceiveNotificationResponse: (detail) async {
         if (detail.payload == '') {
           return;
+        } else {
+          onSelectNotification(detail.payload);
         }
-
-        onReceiveNotification(context, detail.payload!);
       },
     );
   }
@@ -110,52 +121,51 @@ class AlarmUtils {
       matchDateTimeComponents: DateTimeComponents.time,
       payload: payload,
     );
+
+    fln.show(1, title, description, notificationDetails, payload: payload);
   }
 
-  void onReceiveNotification(BuildContext context, String payload) {
-    Navigator.push(
-      context,
-      MaterialPageRoute(builder: (context) => const MyApp()),
-    );
-  }
-
-  void alarmBytriggerByOrder(List<List<String>> todaySchedule) async {
+  void alarmBytriggerByOrder(List<List<String>> thistodaySchedule) async {
+    sortData();
     var nowHour = DateTime.now().hour;
+    var nowMinute = DateTime.now().minute;
 
-    for (var i = 0; i < todaySchedule.length; i++) {
-      int scheduleStart = int.tryParse(todaySchedule[i][3]) ?? 0;
-      int scheduleDuration = int.tryParse(todaySchedule[i][4]) ?? 0;
-      int scheduleEnd = (scheduleStart + scheduleDuration) * 60;
-      int triggerCountDown = (scheduleStart - nowHour) * 60;
+    for (var i = 0; i < thistodaySchedule.length; i++) {
+      int scheduleStart = int.tryParse(thistodaySchedule[i][3]) ?? 0;
+      int scheduleDuration = int.tryParse(thistodaySchedule[i][4]) ?? 0;
+      int triggerCountDown = ((scheduleStart - nowHour) * 60) -
+          (nowMinute - 10); // 10 minutes before
+      var endHour = scheduleStart + scheduleDuration;
 
-      if (todaySchedule[i][3] == '10') {
-        setNotifScheduled("88", "88", todaySchedule[i][1], todaySchedule[i][2],
-            "trigger", 10);
-        await Future.delayed(const Duration(seconds: 10));
+      if (triggerCountDown <= 0) {
+        //! will fix later
+        continue;
       } else {
-        setNotifScheduled("88", "88", todaySchedule[i][1], todaySchedule[i][2],
-            "trigger", 10);
-        await Future.delayed(const Duration(seconds: 10));
+        await Future.delayed(
+          Duration(minutes: triggerCountDown),
+          () {
+            print(" delay $i done");
+            setNotifScheduled(
+                "88",
+                "88",
+                thistodaySchedule[i][1],
+                thistodaySchedule[i][2],
+                "${thistodaySchedule[i][1]} | $scheduleStart.00 - $endHour.00",
+                0);
+          },
+        );
       }
     }
+
+    fln.cancelAll();
+    todaySchedule = [];
   }
 
   AlarmUtils(this.todaySchedule) {
-    sortData();
-
-    if (todaySchedule.isEmpty != true) {
+    if (todaySchedule.isEmpty == true) {
+      print("no data in today schedule");
+    } else {
       alarmBytriggerByOrder(todaySchedule);
     }
   }
-}
-
-@pragma('vm:entry-point')
-void onReceiveNotification(
-    BuildContext ctx, NotificationResponse response) async {
-  WidgetsFlutterBinding.ensureInitialized();
-  Navigator.push(
-      ctx,
-      MaterialPageRoute(
-        builder: (context) => const MyApp(),
-      ));
 }

@@ -5,6 +5,8 @@ import 'package:intl/intl.dart';
 
 import 'package:flutter/material.dart';
 import 'package:unai_reminder/main.dart';
+import 'package:unai_reminder/model/model_schedule.dart';
+import 'package:unai_reminder/page/dashboard/page_schedule_details.dart';
 import 'package:unai_reminder/utils/utils_alarm.dart';
 
 // ignore: must_be_immutable
@@ -253,6 +255,21 @@ class _SchedulePageState extends State<SchedulePage> {
     return todaySchedule;
   }
 
+  void sortData() {
+    for (var i = 0; i < choosenSchedule.length; i++) {
+      for (var j = 0; j < choosenSchedule.length; j++) {
+        var currentElHour = int.tryParse(choosenSchedule[i][3]) ?? 0;
+        var iterableElHour = int.tryParse(choosenSchedule[j][3]) ?? 0;
+        if (iterableElHour > currentElHour) {
+          var temp = choosenSchedule[i];
+          choosenSchedule[i] = choosenSchedule[j];
+          choosenSchedule[j] = temp;
+        }
+      }
+    }
+    print('sortedCHOOSEN : $todaySchedule');
+  }
+
   List<String?> getDayAndMonthName() {
     const Map<int, String> weekdayName = {
       1: "Monday",
@@ -284,20 +301,6 @@ class _SchedulePageState extends State<SchedulePage> {
 
   @override
   Widget build(BuildContext context) {
-    if (getTodaySchedule().isEmpty == true && _isNotifShowOneTime == false) {
-      _isNotifShowOneTime = true;
-      Future.delayed(
-        const Duration(seconds: 5),
-        () {
-          alarmUtil.setNotifOneShot(
-              "0",
-              "No schedule",
-              "Hi ${widget.username}!",
-              "Looks like you don't have any schedule today, but please be stay productive yaa?");
-        },
-      );
-    }
-
     return Column(
       children: [
         Expanded(
@@ -325,6 +328,22 @@ class _SchedulePageState extends State<SchedulePage> {
                       }
 
                       _isNotifShowOneTime;
+                      if (getTodaySchedule().isEmpty == true &&
+                          _isNotifShowOneTime == false) {
+                        _isNotifShowOneTime = true;
+                        Future.delayed(
+                          const Duration(seconds: 2),
+                          () {
+                            alarmUtil.setNotifOneShot(
+                                "0",
+                                "No schedule",
+                                "Hi ${widget.username}!",
+                                "Looks like you don't have any schedule today, but please be stay productive yaa?");
+                          },
+                        );
+                      }
+                      choosenSchedule;
+
                       setState(() {});
                     },
                     child: index == 0
@@ -388,75 +407,34 @@ class _SchedulePageState extends State<SchedulePage> {
                     shrinkWrap: true,
                     itemCount: todaySchedule.length,
                     itemBuilder: (context, index) {
+                      AlarmUtils(todaySchedule);
                       print('today schedule after build: $todaySchedule');
-                      AlarmUtils(getTodaySchedule());
                       return SizedBox(
-                        height: 250,
-                        child: Card(
-                          color: schedulebackground[
-                              Random().nextInt(schedulebackground.length - 1)],
-                          borderOnForeground: true,
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(35),
-                          ),
-                          child: ListTile(
-                            title: Center(
-                              child: Column(
-                                children: [
-                                  const Padding(
-                                      padding: EdgeInsets.only(top: 80)),
-                                  Center(
-                                    child: Text(
-                                      todaySchedule[index][1],
-                                      style: const TextStyle(
-                                          color: Colors.black,
-                                          letterSpacing: 3,
-                                          fontFamily: 'Sp',
-                                          fontWeight: FontWeight.w600,
-                                          fontSize: 30),
-                                    ),
-                                  ),
-                                  const Padding(
-                                      padding: EdgeInsets.only(top: 30)),
-                                  Center(
-                                    child: Column(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.spaceAround,
-                                      children: [
-                                        Text(
-                                          '${todaySchedule[index][0]} | ${todaySchedule[index][2]} | ${todaySchedule[index][3]} ',
-                                          style: const TextStyle(
-                                              fontWeight: FontWeight.w300,
-                                              fontSize: 13),
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ),
-                        ),
-                      );
-                    })
-                : choosenSchedule.isEmpty == true
-                    ? const Center(
-                        child: Text(
-                          "No schedule, have a nice day <3",
-                          style: TextStyle(color: Colors.white),
-                        ),
-                      )
-                    : ListView.builder(
-                        scrollDirection: Axis.vertical,
-                        shrinkWrap: true,
-                        itemCount: choosenSchedule.length,
-                        itemBuilder: (context, index) {
-                          _isNoScheduleToday = true;
-
-                          AlarmUtils(choosenSchedule);
-
-                          return SizedBox(
-                            height: 250,
+                          height: 250,
+                          child: InkWell(
+                            onTap: () {
+                              int scheduleStart =
+                                  int.tryParse(todaySchedule[index][3]) ?? 0;
+                              int scheduleDuration =
+                                  int.tryParse(todaySchedule[index][4]) ?? 0;
+                              var endHour = scheduleStart + scheduleDuration;
+                              var newScheduleFormat = ScheduleModel();
+                              newScheduleFormat.majorName =
+                                  todaySchedule[index][1];
+                              newScheduleFormat.lectureName =
+                                  todaySchedule[index][2];
+                              newScheduleFormat.majorKey =
+                                  todaySchedule[index][0];
+                              newScheduleFormat.day = todaySchedule[index][5];
+                              newScheduleFormat.time =
+                                  "$scheduleStart.00 - $endHour.00";
+                              Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) =>
+                                        ScheduleDetailsPage(newScheduleFormat),
+                                  ));
+                            },
                             child: Card(
                               color: schedulebackground[Random()
                                   .nextInt(schedulebackground.length - 1)],
@@ -472,7 +450,7 @@ class _SchedulePageState extends State<SchedulePage> {
                                           padding: EdgeInsets.only(top: 80)),
                                       Center(
                                         child: Text(
-                                          choosenSchedule[index][1],
+                                          todaySchedule[index][1],
                                           style: const TextStyle(
                                               color: Colors.black,
                                               letterSpacing: 3,
@@ -489,7 +467,7 @@ class _SchedulePageState extends State<SchedulePage> {
                                               MainAxisAlignment.spaceAround,
                                           children: [
                                             Text(
-                                              '${choosenSchedule[index][0]} | ${choosenSchedule[index][2]} | ${choosenSchedule[index][3]} ',
+                                              '${todaySchedule[index][0]} | ${todaySchedule[index][2]} | ${todaySchedule[index][3]} ',
                                               style: const TextStyle(
                                                   fontWeight: FontWeight.w300,
                                                   fontSize: 13),
@@ -502,7 +480,102 @@ class _SchedulePageState extends State<SchedulePage> {
                                 ),
                               ),
                             ),
-                          );
+                          ));
+                    })
+                : choosenSchedule.isEmpty == true
+                    ? const Center(
+                        child: Text(
+                          "No schedule, have a nice day <3",
+                          style: TextStyle(color: Colors.white),
+                        ),
+                      )
+                    : ListView.builder(
+                        scrollDirection: Axis.vertical,
+                        shrinkWrap: true,
+                        itemCount: choosenSchedule.length,
+                        itemBuilder: (context, index) {
+                          _isNoScheduleToday = true;
+                          sortData();
+                          return SizedBox(
+                              height: 250,
+                              child: InkWell(
+                                onTap: () {
+                                  int scheduleStart =
+                                      int.tryParse(choosenSchedule[index][3]) ??
+                                          0;
+                                  int scheduleDuration =
+                                      int.tryParse(choosenSchedule[index][4]) ??
+                                          0;
+                                  var endHour =
+                                      scheduleStart + scheduleDuration;
+                                  var newScheduleFormat = ScheduleModel();
+                                  newScheduleFormat.majorName =
+                                      choosenSchedule[index][1];
+                                  newScheduleFormat.lectureName =
+                                      choosenSchedule[index][2];
+                                  newScheduleFormat.majorKey =
+                                      choosenSchedule[index][0];
+                                  newScheduleFormat.day =
+                                      choosenSchedule[index][5];
+                                  newScheduleFormat.time =
+                                      "$scheduleStart.00 - $endHour.00";
+                                  Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (context) =>
+                                            ScheduleDetailsPage(
+                                                newScheduleFormat),
+                                      ));
+                                },
+                                child: Card(
+                                  color: schedulebackground[Random()
+                                      .nextInt(schedulebackground.length - 1)],
+                                  borderOnForeground: true,
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(35),
+                                  ),
+                                  child: ListTile(
+                                    title: Center(
+                                      child: Column(
+                                        children: [
+                                          const Padding(
+                                              padding:
+                                                  EdgeInsets.only(top: 80)),
+                                          Center(
+                                            child: Text(
+                                              choosenSchedule[index][1],
+                                              style: const TextStyle(
+                                                  color: Colors.black,
+                                                  letterSpacing: 3,
+                                                  fontFamily: 'Sp',
+                                                  fontWeight: FontWeight.w600,
+                                                  fontSize: 30),
+                                            ),
+                                          ),
+                                          const Padding(
+                                              padding:
+                                                  EdgeInsets.only(top: 30)),
+                                          Center(
+                                            child: Column(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment.spaceAround,
+                                              children: [
+                                                Text(
+                                                  '${choosenSchedule[index][0]} | ${choosenSchedule[index][2]} | ${choosenSchedule[index][4]} SKS ',
+                                                  style: const TextStyle(
+                                                      fontWeight:
+                                                          FontWeight.w300,
+                                                      fontSize: 13),
+                                                ),
+                                              ],
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ));
                         })),
       ],
     );
