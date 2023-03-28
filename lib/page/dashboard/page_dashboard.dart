@@ -181,6 +181,8 @@ class _DashboardPageState extends State<DashboardPage> {
     }
   }
 
+  var time = DateTime.now();
+
   @override
   Widget build(BuildContext context) {
     return FutureBuilder(
@@ -202,12 +204,12 @@ class _DashboardPageState extends State<DashboardPage> {
                       username == ""
                           ? spinkit
                           : Text(
-                              "$greet $username!",
+                              "$greet $username! $time",
                               style: const TextStyle(
                                 fontFamily: "Sp",
                                 color: Colors.white,
                                 fontWeight: FontWeight.w600,
-                                fontSize: 15,
+                                fontSize: 10,
                               ),
                             ),
                       ElevatedButton.icon(

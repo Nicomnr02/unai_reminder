@@ -131,11 +131,14 @@ class AlarmUtils {
     var nowMinute = DateTime.now().minute;
 
     for (var i = 0; i < thistodaySchedule.length; i++) {
-      int scheduleStart = int.tryParse(thistodaySchedule[i][3]) ?? 0;
+      //int.tryParse(thistodaySchedule[i][3]) ?? 0
+      int scheduleStart = 15;
       int scheduleDuration = int.tryParse(thistodaySchedule[i][4]) ?? 0;
-      int triggerCountDown = ((scheduleStart - nowHour) * 60) -
-          (nowMinute - 10); // 10 minutes before
+      int triggerCountDown = (scheduleStart * 60) -
+          ((nowHour * 60) + (nowMinute + 10)); // 10 minutes before
       var endHour = scheduleStart + scheduleDuration;
+
+      print('triggerCT: $triggerCountDown');
 
       if (triggerCountDown <= 0) {
         //! will fix later
