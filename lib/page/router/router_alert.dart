@@ -60,14 +60,15 @@ class _AlertState extends State<Alert> {
                       onPressed: () {
                         Navigator.pop(context);
                       },
-                      child: const Text("Back to my schedule page"))
+                      child: const Text(
+                          "Back to my schedule page")) //!need to maintain later
                   : ElevatedButton(
                       onPressed: () {
                         Navigator.pop(context);
                       },
-                      child: const Text("Cancel")),
+                      child: const Text("Back to schedule")),
               const Padding(
-                padding: EdgeInsets.only(left: 40, right: 40),
+                padding: EdgeInsets.only(left: 20, right: 20),
               ),
               ElevatedButton(
                   onPressed: () async {
@@ -76,7 +77,7 @@ class _AlertState extends State<Alert> {
                     _isAutoStartEnable = true;
                     setState(() {});
                   },
-                  child: const Text("OK")),
+                  child: const Text("Go to settings")),
             ]),
           ],
         )),

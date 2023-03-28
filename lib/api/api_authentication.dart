@@ -44,7 +44,7 @@ class UserAPI {
       }, body: {
         'username': username,
         'password': password
-      }).timeout(const Duration(seconds: 7));
+      }).timeout(const Duration(seconds: 5));
 
       if (response.statusCode != 302) {
         responseString = "Username or Password is wrong";

@@ -1,16 +1,13 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:unai_reminder/main.dart';
 import 'package:unai_reminder/page/authentication/page_authentication.dart';
 
 import 'package:unai_reminder/page/dashboard/page_schedule.dart';
-import 'package:unai_reminder/page/router/router_alert.dart';
 import 'package:unai_reminder/repository/repo_authentication.dart';
 import 'package:unai_reminder/repository/repo_dashboard.dart';
-import 'package:auto_start_flutter/auto_start_flutter.dart';
 
 class DashboardPage extends StatefulWidget {
   const DashboardPage({super.key});
@@ -204,12 +201,12 @@ class _DashboardPageState extends State<DashboardPage> {
                       username == ""
                           ? spinkit
                           : Text(
-                              "$greet $username! $time",
+                              "$greet $username!",
                               style: const TextStyle(
                                 fontFamily: "Sp",
                                 color: Colors.white,
                                 fontWeight: FontWeight.w600,
-                                fontSize: 10,
+                                fontSize: 15,
                               ),
                             ),
                       ElevatedButton.icon(

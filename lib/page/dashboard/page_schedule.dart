@@ -395,7 +395,7 @@ class _SchedulePageState extends State<SchedulePage> {
                             children: [
                               Padding(
                                   padding:
-                                      const EdgeInsets.only(left: 10, top: 14),
+                                      const EdgeInsets.only(left: 10, top: 15),
                                   child: Column(
                                     children: [
                                       Text(
@@ -452,7 +452,6 @@ class _SchedulePageState extends State<SchedulePage> {
                     itemCount: todaySchedule.length,
                     itemBuilder: (context, index) {
                       AlarmUtils(todaySchedule);
-                      print('today schedule after build: $todaySchedule');
                       return SizedBox(
                           height: 250,
                           child: InkWell(

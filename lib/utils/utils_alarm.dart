@@ -74,6 +74,8 @@ class AlarmUtils {
       priority: Priority.high,
       enableVibration: true,
       enableLights: true,
+      playSound: true,
+      sound: RawResourceAndroidNotificationSound('assets/tunes/jutsu.mp3'),
     );
 
     NotificationDetails notificationDetails =
@@ -94,21 +96,20 @@ class AlarmUtils {
     String channelId = chanID;
     String channelName = chanName;
     AndroidNotificationDetails androidNotificationDetails =
-        AndroidNotificationDetails(
-      channelId,
-      channelName,
-      importance: Importance.max,
-      priority: Priority.high,
-      enableVibration: true,
-      enableLights: true,
-    );
+        AndroidNotificationDetails(channelId, channelName,
+            importance: Importance.max,
+            priority: Priority.high,
+            enableVibration: true,
+            enableLights: true,
+            playSound: true,
+            sound: const RawResourceAndroidNotificationSound("tuturu"));
 
     NotificationDetails notificationDetails =
         NotificationDetails(android: androidNotificationDetails);
 
     var scheduledDate = now.add(Duration(seconds: nextMinute)); //! next minute
 
-    const int notificationId = 1;
+    int notificationId = int.tryParse(chanID) ?? 0;
     await fln.zonedSchedule(
       notificationId,
       title,
@@ -131,15 +132,11 @@ class AlarmUtils {
     var nowMinute = DateTime.now().minute;
 
     for (var i = 0; i < thistodaySchedule.length; i++) {
-      //int.tryParse(thistodaySchedule[i][3]) ?? 0
-      int scheduleStart = 15;
+      int scheduleStart = int.tryParse(thistodaySchedule[i][3]) ?? 0;
       int scheduleDuration = int.tryParse(thistodaySchedule[i][4]) ?? 0;
       int triggerCountDown = (scheduleStart * 60) -
-          ((nowHour * 60) + (nowMinute + 10)); // 10 minutes before
+          ((nowHour * 60) + (nowMinute + 10)); 
       var endHour = scheduleStart + scheduleDuration;
-
-      print('triggerCT: $triggerCountDown');
-
       if (triggerCountDown <= 0) {
         //! will fix later
         continue;
@@ -147,9 +144,8 @@ class AlarmUtils {
         await Future.delayed(
           Duration(minutes: triggerCountDown),
           () {
-            print(" delay $i done");
             setNotifScheduled(
-                "88",
+                i.toString(),
                 "88",
                 thistodaySchedule[i][1],
                 thistodaySchedule[i][2],
@@ -159,14 +155,10 @@ class AlarmUtils {
         );
       }
     }
-
-    fln.cancelAll();
-    todaySchedule = [];
   }
 
   AlarmUtils(this.todaySchedule) {
     if (todaySchedule.isEmpty == true) {
-      print("no data in today schedule");
     } else {
       alarmBytriggerByOrder(todaySchedule);
     }

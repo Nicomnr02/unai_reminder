@@ -16,7 +16,9 @@
             android:windowSoftInputMode="adjustResize"
             android:showWhenLocked="true"
             android:turnScreenOn="true"
-            android:exported="true">
+            android:exported="true"
+        
+            >
             <!-- Specifies an Android theme to apply to this Activity as soon as
                  the Android process has started. This theme is visible to the user
                  while the Flutter UI initializes. After that, this theme continues
@@ -47,6 +49,7 @@
             android:permission="android.permission.RECEIVE_BOOT_COMPLETED"
             android:exported="true"
             tools:replace="android:exported">
+        <!-- <receiver android:name="com.dexterous.flutterlocalnotifications.ScheduledNotificationReceiver" /> -->
         <intent-filter>
             <action android:name="android.intent.action.BOOT_COMPLETED" />
             <action android:name="android.intent.action.MY_PACKAGE_REPLACED" />
