@@ -31,6 +31,7 @@ class _SchedulePageState extends State<SchedulePage> {
   bool _isFirstOpen = true;
   bool _isNoScheduleToday = false;
   bool _isNotifShowOneTime = false;
+
   UserRepository userRepo = UserRepository();
 
   Future<void> initAutoStart() async {
@@ -66,6 +67,12 @@ class _SchedulePageState extends State<SchedulePage> {
     Colors.yellow,
     const Color.fromARGB(255, 202, 166, 209),
   ];
+
+  Color getColor() {
+    return schedulebackground[Random().nextInt(schedulebackground.length - 1)];
+  }
+
+  Color cardColor = Colors.white;
 
   List<String> getAmountDayInCurrentMonth() {
     var time = DateTime.now();
@@ -331,6 +338,7 @@ class _SchedulePageState extends State<SchedulePage> {
   @override
   void initState() {
     super.initState();
+    cardColor = getColor();
   }
 
   @override
@@ -467,13 +475,12 @@ class _SchedulePageState extends State<SchedulePage> {
                               Navigator.push(
                                   context,
                                   MaterialPageRoute(
-                                    builder: (context) =>
-                                        ScheduleDetailsPage(newScheduleFormat),
+                                    builder: (context) => ScheduleDetailsPage(
+                                        newScheduleFormat, cardColor),
                                   ));
                             },
                             child: Card(
-                              color: schedulebackground[Random()
-                                  .nextInt(schedulebackground.length - 1)],
+                              color: cardColor,
                               borderOnForeground: true,
                               shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(35),
@@ -560,12 +567,11 @@ class _SchedulePageState extends State<SchedulePage> {
                                       MaterialPageRoute(
                                         builder: (context) =>
                                             ScheduleDetailsPage(
-                                                newScheduleFormat),
+                                                newScheduleFormat, cardColor),
                                       ));
                                 },
                                 child: Card(
-                                  color: schedulebackground[Random()
-                                      .nextInt(schedulebackground.length - 1)],
+                                  color: cardColor,
                                   borderOnForeground: true,
                                   shape: RoundedRectangleBorder(
                                     borderRadius: BorderRadius.circular(35),

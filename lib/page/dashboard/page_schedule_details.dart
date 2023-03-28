@@ -4,7 +4,8 @@ import 'package:unai_reminder/model/model_schedule.dart';
 // ignore: must_be_immutable
 class ScheduleDetailsPage extends StatelessWidget {
   var scheduleModel = ScheduleModel();
-  ScheduleDetailsPage(this.scheduleModel, {super.key});
+  Color squareColor;
+  ScheduleDetailsPage(this.scheduleModel, this.squareColor, {super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -16,15 +17,16 @@ class ScheduleDetailsPage extends StatelessWidget {
             padding: const EdgeInsets.only(top: 70),
             child: Row(
               children: [
-                const Padding(
-                  padding: EdgeInsets.only(right: 20, left: 10),
+                Padding(
+                  padding: const EdgeInsets.only(right: 15, left: 10),
                   child: Icon(
                     Icons.square,
-                    color: Colors.blue,
+                    color: squareColor,
                     size: 40,
                   ),
                 ),
-                Text(
+                Expanded(
+                    child: Text(
                   scheduleModel.majorName,
                   textAlign: TextAlign.start,
                   style: const TextStyle(
@@ -32,7 +34,7 @@ class ScheduleDetailsPage extends StatelessWidget {
                       color: Colors.white,
                       fontSize: 25,
                       fontWeight: FontWeight.bold),
-                ),
+                )),
               ],
             )),
         Padding(
