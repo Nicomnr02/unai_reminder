@@ -20,7 +20,7 @@ class IntroductionPage extends StatelessWidget {
               height: 50,
             ),
             const Text(
-              "Get Schedule.\nGet Productivity.",
+              "Get On Schedule.\nGet Productive.",
               style: TextStyle(
                   color: Colors.white,
                   fontFamily: "Sp",

@@ -1,5 +1,7 @@
 import 'dart:io';
 import 'dart:math';
+import 'package:auto_start_flutter/auto_start_flutter.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:intl/intl.dart';
 
@@ -8,6 +10,9 @@ import 'package:unai_reminder/main.dart';
 import 'package:unai_reminder/model/model_schedule.dart';
 import 'package:unai_reminder/page/dashboard/page_schedule_details.dart';
 import 'package:unai_reminder/utils/utils_alarm.dart';
+
+import '../../repository/repo_authentication.dart';
+import '../router/router_alert.dart';
 
 // ignore: must_be_immutable
 class SchedulePage extends StatefulWidget {
@@ -26,6 +31,30 @@ class _SchedulePageState extends State<SchedulePage> {
   bool _isFirstOpen = true;
   bool _isNoScheduleToday = false;
   bool _isNotifShowOneTime = false;
+  UserRepository userRepo = UserRepository();
+
+  Future<void> initAutoStart() async {
+    var isFirstLogin = await userRepo.read("isFirstLogin");
+    if (isFirstLogin.isNotEmpty == true) {
+      return;
+    }
+
+    try {
+      //check auto-start availability.
+      var test = await (isAutoStartAvailable);
+      print(test);
+      //if available then navigate to auto-start setting page.
+
+      if (test!) {
+        navigatorKey.currentState!.push(
+          MaterialPageRoute(builder: (context) => const Alert()),
+        );
+      }
+    } on PlatformException catch (e) {
+      print(e);
+    }
+    if (!mounted) return;
+  }
 
   var spinkit = const SpinKitThreeInOut(
     color: Colors.blue,
@@ -300,6 +329,11 @@ class _SchedulePageState extends State<SchedulePage> {
   }
 
   @override
+  void initState() {
+    super.initState();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Column(
       children: [
@@ -314,6 +348,8 @@ class _SchedulePageState extends State<SchedulePage> {
                 children: [
                   InkWell(
                     onTap: () {
+                      initAutoStart();
+
                       _isNoScheduleToday;
                       if (_isNoScheduleToday == true) {
                         choosenSchedule = [];
