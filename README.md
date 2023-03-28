@@ -1,16 +1,13 @@
-# unai_reminder
+# Unai Reminder
 
-A new Flutter project.
+UNAI Reminder is an alarm application by the learning schedule of Adventist University of Indonesia. The app will remind users of today's schedule automatically when the app is opened. Some features are still in the checking stage, so don't hesitate to attach existing issues to increase comfort in using this application.
 
 ## Getting Started
 
-This project is a starting point for a Flutter application.
+Some things that need to be considered in using Unai Reminder are:
 
-A few resources to get you started if this is your first Flutter project:
+- Make sure the internet connection is good when you want to log in.
+- Enter the same credential/account as the Indonesian Adventist University Student Module.
+- If you think there is an error in the schedule output, please exit the application and log back in (cases like this occur because the internet connection is weak and still under developer checking).
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
-
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+Thank you for using Unai Reminder service.
