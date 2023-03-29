@@ -13,7 +13,7 @@ class DashboardRepository {
 
   Future<List<String>> read(String key) async {
     final prefs = await db.initDB();
-    scheduleData = await prefs.getStringList(key) ?? [];
+    scheduleData = prefs.getStringList(key) ?? [];
     return scheduleData!;
   }
 }

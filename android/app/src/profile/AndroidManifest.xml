@@ -41,19 +41,7 @@
         <meta-data
             android:name="flutterEmbedding"
             android:value="2" />
-        <!-- If you want your foreground service to be stopped if
-             your app is stopped, set android:stopWithTask to true.
-             See https://developer.android.com/reference/android/R.attr#stopWithTask -->
-        <service
-            android:name="com.dexterous.flutterlocalnotifications.ForegroundService"        
-            android:exported="false"
-            android:stopWithTask="false"/>
-        <!-- <receiver android:name="com.dexterous.flutterlocalnotifications.ScheduledNotificationReceiver" /> -->
-      <receiver
-            android:name="com.dexterous.flutterlocalnotifications.ScheduledNotificationBootReceiver"
-            android:permission="android.permission.RECEIVE_BOOT_COMPLETED"
-            android:exported="true"
-            tools:replace="android:exported">
+      
         <intent-filter>
             <action android:name="android.intent.action.BOOT_COMPLETED" />
             <action android:name="android.intent.action.MY_PACKAGE_REPLACED" />
@@ -65,4 +53,6 @@
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+    <uses-permission android:name="android.permission.SCHEDULE_EXACT_ALARM" />
+
 </manifest>

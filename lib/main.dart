@@ -1,23 +1,40 @@
 import 'dart:io';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:unai_reminder/page/introduction/page_splash.dart';
 import 'package:unai_reminder/utils/utils_alarm.dart';
-
+import 'package:awesome_notifications/awesome_notifications.dart';
 import 'package:unai_reminder/utils/utils_db.dart';
 import 'package:timezone/data/latest.dart' as tz;
 
-import 'page/dashboard/page_alarm.dart';
-
-final fln = FlutterLocalNotificationsPlugin();
+// final fln = FlutterLocalNotificationsPlugin();
 final alarmUtil = AlarmUtils([]);
 final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 
 void main() async {
-  DB();
-  tz.initializeTimeZones();
   WidgetsFlutterBinding.ensureInitialized();
+  DB();
+  await AwesomeNotifications().initialize(
+    // set the 'default' icon for notifications
+    'resource://drawable/app_icon',
+    // set the notification channels
+    [
+      NotificationChannel(
+        channelKey: 'key1',
+        channelName: 'Channel Name',
+        channelDescription: 'Channel Description',
+        defaultColor: Colors.red,
+        ledColor: Colors.white,
+        enableVibration: true,
+        vibrationPattern: highVibrationPattern,
+        importance: NotificationImportance.High,
+        soundSource: 'resource://raw/res_custom_notification',
+        playSound: true,
+        channelShowBadge: true,
+      ),
+    ],
+  );
+  tz.initializeTimeZones();
   GestureBinding.instance.resamplingEnabled = true;
   HttpOverrides.global = MyHttpOverrides();
   runApp(const MyApp());
@@ -32,12 +49,6 @@ class MyApp extends StatefulWidget {
 
 class _MyAppState extends State<MyApp> {
   @override
-  void initState() {
-    super.initState();
-    alarmUtil.initAlarm(context, fln);
-  }
-
-  @override
   Widget build(BuildContext context) {
     return GestureDetector(
         onTap: () {
@@ -48,7 +59,6 @@ class _MyAppState extends State<MyApp> {
           }
         },
         child: MaterialApp(
-          //still checking caous its cons
           navigatorKey: navigatorKey,
           debugShowCheckedModeBanner: false,
           home: const SplashPage(),

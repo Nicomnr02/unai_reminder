@@ -1,6 +1,4 @@
-import 'package:auto_start_flutter/auto_start_flutter.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:unai_reminder/page/dashboard/page_dashboard.dart';
 import 'package:unai_reminder/page/introduction/page_welcome.dart';
 import 'package:unai_reminder/page/router/router_response.dart';

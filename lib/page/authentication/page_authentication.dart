@@ -1,12 +1,7 @@
-import 'package:auto_start_flutter/auto_start_flutter.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:unai_reminder/page/introduction/page_welcome.dart';
 
 import '../../api/api_authentication.dart';
-import '../../main.dart';
-import '../../repository/repo_authentication.dart';
-import '../router/router_alert.dart';
 
 final formKey = GlobalKey<FormState>();
 

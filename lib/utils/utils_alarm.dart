@@ -1,14 +1,17 @@
-import 'dart:async';
-
+import 'package:awesome_notifications/awesome_notifications.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_local_notifications/flutter_local_notifications.dart';
-import 'package:timezone/timezone.dart' as tz;
-import 'package:unai_reminder/main.dart';
-import 'package:unai_reminder/model/model_alarm.dart';
-import 'package:unai_reminder/page/dashboard/page_alarm.dart';
 
 class AlarmUtils {
   List<List<String>> todaySchedule = [];
+
+  Map<String, int> days = {
+    "M.": 1,
+    "T.": 2,
+    "W.": 3,
+    "Th.": 4,
+    "F.": 5,
+    "S.": 7,
+  };
 
   void sortData() {
     for (var i = 0; i < todaySchedule.length; i++) {
@@ -25,135 +28,58 @@ class AlarmUtils {
     print('sorted : $todaySchedule');
   }
 
-  Future<dynamic> onSelectNotification(payload) async {
-    if (payload != "") {
-      var triggerSchedule = AlarmModel().newAlarmModel(payload!);
-      navigatorKey.currentState!.push(
-        MaterialPageRoute(builder: (context) => AlarmPage(triggerSchedule)),
-      );
-    }
-  }
-
-  Future<void> initAlarm(BuildContext context,
-      FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin) async {
-    WidgetsFlutterBinding.ensureInitialized();
-
-    const AndroidInitializationSettings initializationSettingsAndroid =
-        AndroidInitializationSettings('@drawable/app_icon');
-
-    const InitializationSettings initializationSettings =
-        InitializationSettings(
-      android: initializationSettingsAndroid,
-    );
-
-    await flutterLocalNotificationsPlugin.initialize(
-      initializationSettings,
-      onDidReceiveNotificationResponse: (detail) async {
-        if (detail.payload == '') {
-          return;
-        } else {
-          onSelectNotification(detail.payload);
-        }
-      },
-    );
-  }
-
-  Future<void> setNotifOneShot(
-    String chanID,
-    String chanName,
-    String title,
-    String description,
-  ) async {
-    String channelId = chanID;
-    String channelName = chanName;
-    AndroidNotificationDetails androidNotificationDetails =
-        AndroidNotificationDetails(
-      channelId,
-      channelName,
-      importance: Importance.max,
-      priority: Priority.high,
-      enableVibration: true,
-      enableLights: true,
-      playSound: true,
-      sound: RawResourceAndroidNotificationSound('assets/tunes/jutsu.mp3'),
-    );
-
-    NotificationDetails notificationDetails =
-        NotificationDetails(android: androidNotificationDetails);
-
-    fln.show(0, title, description, notificationDetails, payload: '');
-  }
-
-  Future<void> setNotifScheduled(
-    String chanID,
-    String chanName,
-    String title,
-    String description,
-    String payload,
-    int nextMinute,
-  ) async {
-    var now = tz.TZDateTime.now(tz.local);
-    String channelId = chanID;
-    String channelName = chanName;
-    AndroidNotificationDetails androidNotificationDetails =
-        AndroidNotificationDetails(channelId, channelName,
-            importance: Importance.max,
-            priority: Priority.high,
-            enableVibration: true,
-            enableLights: true,
-            playSound: true,
-            sound: const RawResourceAndroidNotificationSound("tuturu"));
-
-    NotificationDetails notificationDetails =
-        NotificationDetails(android: androidNotificationDetails);
-
-    var scheduledDate = now.add(Duration(seconds: nextMinute)); //! next minute
-
-    int notificationId = int.tryParse(chanID) ?? 0;
-    await fln.zonedSchedule(
-      notificationId,
-      title,
-      description,
-      tz.TZDateTime.from(scheduledDate, tz.local),
-      notificationDetails,
-      androidAllowWhileIdle: true,
-      uiLocalNotificationDateInterpretation:
-          UILocalNotificationDateInterpretation.absoluteTime,
-      matchDateTimeComponents: DateTimeComponents.time,
-      payload: payload,
-    );
-
-    fln.show(1, title, description, notificationDetails, payload: payload);
+  void oneShotNotification(int id, String title, String body) {
+    AwesomeNotifications().createNotification(
+        content: NotificationContent(
+      id: id,
+      channelKey: 'key1',
+      title: title,
+      body: body,
+      displayOnBackground: true,
+      displayOnForeground: true,
+      fullScreenIntent: true,
+      backgroundColor: Colors.black,
+      customSound: 'resource://raw/tuturu.mp3',
+      notificationLayout: NotificationLayout.BigText,
+      bigPicture: 'asset://assets/images/times.png',
+    ));
   }
 
   void alarmBytriggerByOrder(List<List<String>> thistodaySchedule) async {
     sortData();
-    var nowHour = DateTime.now().hour;
-    var nowMinute = DateTime.now().minute;
 
     for (var i = 0; i < thistodaySchedule.length; i++) {
-      int scheduleStart = int.tryParse(thistodaySchedule[i][3]) ?? 0;
-      int scheduleDuration = int.tryParse(thistodaySchedule[i][4]) ?? 0;
-      int triggerCountDown = (scheduleStart * 60) -
-          ((nowHour * 60) + (nowMinute + 10)); 
-      var endHour = scheduleStart + scheduleDuration;
-      if (triggerCountDown <= 0) {
-        //! will fix later
+      var rawHour = thistodaySchedule[i][3];
+      var hour = rawHour[0] + rawHour[1];
+      int hourInt = int.tryParse(hour) ?? 0;
+
+      if (hourInt == 0) {
         continue;
-      } else {
-        await Future.delayed(
-          Duration(minutes: triggerCountDown),
-          () {
-            setNotifScheduled(
-                i.toString(),
-                "88",
-                thistodaySchedule[i][1],
-                thistodaySchedule[i][2],
-                "${thistodaySchedule[i][1]} | $scheduleStart.00 - $endHour.00",
-                0);
-          },
-        );
       }
+      // schedule a notification
+      AwesomeNotifications().createNotification(
+        content: NotificationContent(
+          id: i,
+          channelKey: 'key1',
+          title: thistodaySchedule[i][1],
+          body: thistodaySchedule[i][2],
+          displayOnBackground: true,
+          displayOnForeground: true,
+          fullScreenIntent: true,
+          backgroundColor: Colors.black,
+          customSound: 'resource://raw/res_custom_notification',
+          notificationLayout: NotificationLayout.BigText,
+          bigPicture: 'asset://assets/images/times.png',
+        ),
+        schedule: NotificationCalendar(
+            weekday: days[todaySchedule[i][5]],
+            hour: hourInt - 1,
+            minute: 50,
+            second: 0,
+            timeZone: "Asia/Jakarta",
+            repeats: true,
+            allowWhileIdle: true),
+      );
     }
   }
 

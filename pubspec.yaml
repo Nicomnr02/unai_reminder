@@ -45,9 +45,8 @@ dependencies:
   connectivity: ^3.0.6
   internet_connection_checker: ^1.0.0+1
   intl: ^0.18.0
-  flutter_local_notifications: ^13.0.0
   timezone: ^0.9.0
-  flutter_background_service: ^2.4.6
+  awesome_notifications: ^0.6.19
   auto_start_flutter: ^0.1.1
 
 dev_dependencies:

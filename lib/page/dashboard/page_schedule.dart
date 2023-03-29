@@ -43,7 +43,6 @@ class _SchedulePageState extends State<SchedulePage> {
     try {
       //check auto-start availability.
       var test = await (isAutoStartAvailable);
-      print(test);
       //if available then navigate to auto-start setting page.
 
       if (test!) {
@@ -378,9 +377,8 @@ class _SchedulePageState extends State<SchedulePage> {
                         Future.delayed(
                           const Duration(seconds: 2),
                           () {
-                            alarmUtil.setNotifOneShot(
-                                "0",
-                                "No schedule",
+                            AlarmUtils([]).oneShotNotification(
+                                index,
                                 "Hi ${widget.username}!",
                                 "Looks like you don't have any schedule today, but please be stay productive yaa?");
                           },
@@ -395,7 +393,7 @@ class _SchedulePageState extends State<SchedulePage> {
                             children: [
                               Padding(
                                   padding:
-                                      const EdgeInsets.only(left: 10, top: 15),
+                                      const EdgeInsets.only(left: 10, top: 10),
                                   child: Column(
                                     children: [
                                       Text(
