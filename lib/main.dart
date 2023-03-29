@@ -8,7 +8,6 @@ import 'package:unai_reminder/utils/utils_alarm.dart';
 import 'package:unai_reminder/utils/utils_db.dart';
 import 'package:timezone/data/latest.dart' as tz;
 
-import 'page/dashboard/page_alarm.dart';
 
 final fln = FlutterLocalNotificationsPlugin();
 final alarmUtil = AlarmUtils([]);
@@ -36,6 +35,9 @@ class _MyAppState extends State<MyApp> {
     super.initState();
     alarmUtil.initAlarm(context, fln);
   }
+
+
+  
 
   @override
   Widget build(BuildContext context) {

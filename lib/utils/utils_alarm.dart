@@ -75,7 +75,6 @@ class AlarmUtils {
       enableVibration: true,
       enableLights: true,
       playSound: true,
-      sound: RawResourceAndroidNotificationSound('assets/tunes/jutsu.mp3'),
     );
 
     NotificationDetails notificationDetails =
@@ -134,8 +133,8 @@ class AlarmUtils {
     for (var i = 0; i < thistodaySchedule.length; i++) {
       int scheduleStart = int.tryParse(thistodaySchedule[i][3]) ?? 0;
       int scheduleDuration = int.tryParse(thistodaySchedule[i][4]) ?? 0;
-      int triggerCountDown = (scheduleStart * 60) -
-          ((nowHour * 60) + (nowMinute + 10)); 
+      int triggerCountDown =
+          (scheduleStart * 60) - ((nowHour * 60) + (nowMinute + 10));
       var endHour = scheduleStart + scheduleDuration;
       if (triggerCountDown <= 0) {
         //! will fix later
