@@ -8,7 +8,6 @@ Some things that need to be considered in using Unai Reminder are:
 
 - Make sure the internet connection is good when you want to log in.
 - Enter the same credential/account as the Indonesian Adventist University Student Module.
-- Don't close the app manually (since stage for running app on the background still on development).
 - If you think there is an error in the schedule output, please exit the application and log back in (cases like this occur because the internet connection is weak and still under developer checking).
 
 Thank you for using Unai Reminder service.

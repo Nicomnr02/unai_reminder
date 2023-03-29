@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:unai_reminder/main.dart';
 import 'package:unai_reminder/model/model_alarm.dart';
 
 // ignore: must_be_immutable
@@ -64,7 +63,7 @@ class AlarmPage extends StatelessWidget {
                         ElevatedButton(
                             onPressed: () {
                               Navigator.pop(context);
-                              fln.cancel(1);
+                              // fln.cancel(1);
                             },
                             child: const Icon(Icons.close))
                       ],
