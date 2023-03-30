@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:awesome_notifications/awesome_notifications.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:unai_reminder/page/authentication/page_authentication.dart';
@@ -143,6 +144,21 @@ class _DashboardPageState extends State<DashboardPage> {
     }
   }
 
+  void forcePushNotification() {
+    AwesomeNotifications().isNotificationAllowed().then((isAllowed) {
+      if (!isAllowed) {
+        // This is just a basic example. For real apps, you must show some
+        // friendly dialog box before call the request method.
+        // This is very important to not harm the user experience
+        AwesomeNotifications().requestPermissionToSendNotifications();
+        print("Notif Enable");
+        return;
+      }
+      print("Notif Enable");
+      return;
+    });
+  }
+
   String greeting() {
     var time = DateTime.now();
     var hour = time.hour;
@@ -177,6 +193,12 @@ class _DashboardPageState extends State<DashboardPage> {
   }
 
   var time = DateTime.now();
+
+  @override
+  void initState() {
+    super.initState();
+    forcePushNotification();
+  }
 
   @override
   Widget build(BuildContext context) {
