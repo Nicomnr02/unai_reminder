@@ -4,7 +4,7 @@
   xmlns:tools="http://schemas.android.com/tools"
 >
      <application
-    android:label="unai_reminder"
+    android:label="Unai Reminder"
     android:name="${applicationName}"
     android:icon="@mipmap/ic_launcher"
     android:allowBackup="false"

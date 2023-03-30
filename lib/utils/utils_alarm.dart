@@ -14,6 +14,7 @@ class AlarmUtils {
   };
 
   void sortData() {
+    print("before sorted : $todaySchedule");
     for (var i = 0; i < todaySchedule.length; i++) {
       for (var j = 0; j < todaySchedule.length; j++) {
         var currentElHour = int.tryParse(todaySchedule[i][3]) ?? 0;
@@ -48,6 +49,9 @@ class AlarmUtils {
   void alarmBytriggerByOrder(List<List<String>> thistodaySchedule) async {
     sortData();
 
+    // int tempM = DateTime.now().minute + 1;
+    // int tempH = DateTime.now().hour;
+
     for (var i = 0; i < thistodaySchedule.length; i++) {
       var rawHour = thistodaySchedule[i][3];
       var hour = rawHour[0] + rawHour[1];
@@ -80,6 +84,8 @@ class AlarmUtils {
             repeats: true,
             allowWhileIdle: true),
       );
+
+      // tempM += 1;
     }
   }
 
