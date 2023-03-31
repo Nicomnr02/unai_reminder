@@ -164,9 +164,9 @@ class _DashboardPageState extends State<DashboardPage> {
     var hour = time.hour;
 
     if (time.weekday == 5) {
-      if (hour > 10 && hour < 12) {
+      if (hour >= 10 && hour <= 12) {
         return "Good Afternoon,";
-      } else if (hour > 12 && hour < 18) {
+      } else if (hour >= 13 && hour <= 18) {
         return "Prepare all for the Sabbath Day,";
       } else if (hour > 18) {
         return "Happy Sabbath,";
@@ -183,9 +183,9 @@ class _DashboardPageState extends State<DashboardPage> {
       }
     }
 
-    if (hour > 10 && hour < 12) {
+    if (hour >= 10 && hour <= 12) {
       return "Good Afternoon,";
-    } else if (hour > 12 && hour < 24) {
+    } else if (hour >= 13 && hour < 23) {
       return ("Good Evening,");
     } else {
       return "Good Morning,";
