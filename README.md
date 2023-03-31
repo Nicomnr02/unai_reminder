@@ -10,4 +10,4 @@ Some things that need to be considered in using Unai Reminder are:
 - Enter the same credential/account as the Indonesian Adventist University Student Module.
 - If you think there is an error in the schedule output, please exit the application and log back in (cases like this occur because the internet connection is weak and still under developer checking).
 
-Thank you for using Unai Reminder service.
+Thank you for using Unai Reminder.
