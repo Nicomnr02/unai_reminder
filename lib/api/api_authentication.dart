@@ -110,8 +110,16 @@ class UserAPI {
         responseString = 'Please check your internet connection!';
         return;
       }
-      http.Response resp =
-          await http.get(dashboardURL, headers: {'Cookie': cookie});
+
+      if (cookie.contains(",") == true) {
+        var temp = cookie.split(',');
+        cookie = temp[1];
+      }
+
+      http.Response resp = await http.get(dashboardURL, headers: {
+        'Cookie': cookie,
+      });
+
 
       if (resp.statusCode != 200) {
         responseString = 'Try again!';
