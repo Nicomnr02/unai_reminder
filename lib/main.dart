@@ -7,6 +7,16 @@ import 'package:awesome_notifications/awesome_notifications.dart';
 import 'package:unai_reminder/utils/utils_db.dart';
 import 'package:timezone/data/latest.dart' as tz;
 
+//!To validate certificate to run some security layer on certain device
+class MyHttpOverrides extends HttpOverrides {
+  @override
+  HttpClient createHttpClient(SecurityContext? context) {
+    return super.createHttpClient(context)
+      ..badCertificateCallback =
+          (X509Certificate cert, String host, int port) => true;
+  }
+}
+
 // final fln = FlutterLocalNotificationsPlugin();
 final alarmUtil = AlarmUtils([]);
 final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
@@ -64,15 +74,5 @@ class _MyAppState extends State<MyApp> {
           debugShowCheckedModeBanner: false,
           home: const SplashPage(),
         ));
-  }
-}
-
-//!To validate certificate to run some security layer on certain device
-class MyHttpOverrides extends HttpOverrides {
-  @override
-  HttpClient createHttpClient(SecurityContext? context) {
-    return super.createHttpClient(context)
-      ..badCertificateCallback =
-          (X509Certificate cert, String host, int port) => true;
   }
 }
