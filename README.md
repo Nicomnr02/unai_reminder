@@ -1,6 +1,6 @@
 # Unai Reminder
 
-UNAI Reminder is an alarm application for the study schedule of the Adventist University of Indonesia. This app is made using flutter. The app will remind students of today's schedule automatically when the app is opened. Some features are still in the checking stage, so don't hesitate to attach existing issues to increase comfort in using this application.
+UNAI Reminder is a reminder application for the study schedule of the Adventist University of Indonesia. This app is made using flutter. The app will remind students of today's schedule automatically when the app is opened. Some features are still in the checking stage, so don't hesitate to attach existing issues to increase comfort in using this application.
 
 ## Getting Started
 
