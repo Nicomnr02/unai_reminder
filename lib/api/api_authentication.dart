@@ -44,7 +44,7 @@ class UserAPI {
       }, body: {
         'username': username,
         'password': password
-      }).timeout(const Duration(seconds: 5));
+      }).timeout(const Duration(seconds: 7));
 
       if (response.statusCode != 302) {
         responseString = "Username or Password is wrong";
@@ -119,7 +119,6 @@ class UserAPI {
       http.Response resp = await http.get(dashboardURL, headers: {
         'Cookie': cookie,
       });
-
 
       if (resp.statusCode != 200) {
         responseString = 'Try again!';
