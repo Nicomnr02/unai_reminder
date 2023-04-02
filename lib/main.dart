@@ -13,6 +13,7 @@ final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  HttpOverrides.global = MyHttpOverrides();
   DB();
   await AwesomeNotifications().initialize(
     // set the 'default' icon for notifications
