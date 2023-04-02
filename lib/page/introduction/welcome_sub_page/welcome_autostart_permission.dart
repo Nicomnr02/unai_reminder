@@ -1,6 +1,8 @@
 import 'package:auto_start_flutter/auto_start_flutter.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:android_intent_plus/android_intent.dart';
+import 'package:android_intent_plus/flag.dart';
 
 import '../../../repository/repo_authentication.dart';
 
@@ -14,7 +16,9 @@ class WelcomeAutostartPermission extends StatefulWidget {
 
 class _WelcomeAutostartPermissionState
     extends State<WelcomeAutostartPermission> {
-  Future<void> initAutoStart() async {
+  Future<bool> initAutoStart() async {
+    bool status = false;
+
     try {
       //check auto-start availability.
       var test = await (isAutoStartAvailable);
@@ -22,11 +26,17 @@ class _WelcomeAutostartPermissionState
 
       if (test!) {
         await getAutoStartPermission();
+        status = true;
+        return status;
+      } else {
+        return status;
       }
     } on PlatformException catch (e) {
       print(e);
     }
-    if (!mounted) return;
+
+    if (!mounted) return status;
+    return status;
   }
 
   Future<String> getNotiPermissionStatus() async {
@@ -76,7 +86,16 @@ class _WelcomeAutostartPermissionState
                         Future.delayed(
                             const Duration(seconds: 2), () => setState(() {}));
 
-                        await initAutoStart();
+                        var availableDirectToAutoStartPage =
+                            await initAutoStart();
+                        if (availableDirectToAutoStartPage == false) {
+                          const AndroidIntent intent = AndroidIntent(
+                              action:
+                                  'android.settings.APPLICATION_DETAILS_SETTINGS',
+                              data: 'package:com.example.unai_reminder');
+
+                          intent.launch();
+                        }
                       },
                       child: const Text(
                         "Go to settings",
