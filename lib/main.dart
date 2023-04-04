@@ -1,6 +1,10 @@
 import 'dart:io';
+import 'package:android_alarm_manager_plus/android_alarm_manager_plus.dart';
+import 'package:device_info_plus/device_info_plus.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_background_service/flutter_background_service.dart';
+import 'package:unai_reminder/page/dashboard/page_dashboard.dart';
 import 'package:unai_reminder/page/introduction/page_splash.dart';
 import 'package:unai_reminder/utils/utils_alarm.dart';
 import 'package:awesome_notifications/awesome_notifications.dart';
@@ -25,10 +29,9 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   HttpOverrides.global = MyHttpOverrides();
   DB();
+  await AndroidAlarmManager.initialize();
   await AwesomeNotifications().initialize(
-    // set the 'default' icon for notifications
     'resource://drawable/app_icon',
-    // set the notification channels
     [
       NotificationChannel(
         channelKey: 'key1',
@@ -52,7 +55,9 @@ void main() async {
 }
 
 class MyApp extends StatefulWidget {
-  const MyApp({super.key});
+  final String? initialRoute;
+
+  const MyApp({this.initialRoute, super.key});
 
   @override
   State<MyApp> createState() => _MyAppState();
@@ -61,18 +66,12 @@ class MyApp extends StatefulWidget {
 class _MyAppState extends State<MyApp> {
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-        onTap: () {
-          FocusScopeNode currentFocus = FocusScope.of(context);
-
-          if (!currentFocus.hasPrimaryFocus) {
-            currentFocus.unfocus();
-          }
-        },
-        child: MaterialApp(
-          navigatorKey: navigatorKey,
-          debugShowCheckedModeBanner: false,
-          home: const SplashPage(),
-        ));
+    return MaterialApp(
+      navigatorKey: navigatorKey,
+      debugShowCheckedModeBanner: false,
+      home: const SplashPage(),
+      initialRoute: widget.initialRoute,
+      routes: {'/my/initial/route': (context) => const DashboardPage()},
+    );
   }
 }

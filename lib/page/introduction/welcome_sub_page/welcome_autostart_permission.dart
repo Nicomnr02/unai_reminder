@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:auto_start_flutter/auto_start_flutter.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -22,7 +24,6 @@ class _WelcomeAutostartPermissionState
     try {
       //check auto-start availability.
       var test = await (isAutoStartAvailable);
-      //if available then navigate to auto-start setting page.
 
       if (test!) {
         await getAutoStartPermission();
@@ -37,6 +38,16 @@ class _WelcomeAutostartPermissionState
 
     if (!mounted) return status;
     return status;
+  }
+
+  void initAutoStartAllAndroid() async {
+    if (Platform.isAndroid) {
+      const AndroidIntent intent = AndroidIntent(
+        action: 'action_application_details_settings',
+        data: 'package:com.example.unai_reminder',
+      );
+      await intent.launch();
+    }
   }
 
   Future<String> getNotiPermissionStatus() async {
@@ -89,12 +100,7 @@ class _WelcomeAutostartPermissionState
                         var availableDirectToAutoStartPage =
                             await initAutoStart();
                         if (availableDirectToAutoStartPage == false) {
-                          const AndroidIntent intent = AndroidIntent(
-                              action:
-                                  'android.settings.APPLICATION_DETAILS_SETTINGS',
-                              data: 'package:com.example.unai_reminder');
-
-                          intent.launch();
+                          initAutoStartAllAndroid();
                         }
                       },
                       child: const Text(

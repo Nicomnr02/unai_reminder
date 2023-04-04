@@ -9,6 +9,7 @@ import 'package:html/parser.dart' as html_parser;
 import 'package:unai_reminder/model/model_creds.dart';
 import 'package:unai_reminder/page/router/router_page_router.dart';
 import 'package:unai_reminder/repository/repo_dashboard.dart';
+import 'package:unai_reminder/utils/utils_db.dart';
 
 import '../repository/repo_authentication.dart';
 
@@ -99,6 +100,8 @@ class UserAPI {
 
     dashRepo.write(
         day, ['$majorKey|$majorName|$lectureName|$time|$sksAmount|$day']);
+
+       
 
     return await dashRepo.read(day);
   }

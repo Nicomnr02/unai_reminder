@@ -1,7 +1,9 @@
 import 'dart:async';
 
+import 'package:android_alarm_manager_plus/android_alarm_manager_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'package:unai_reminder/main.dart';
 import 'package:unai_reminder/page/authentication/page_authentication.dart';
 
 import 'package:unai_reminder/page/dashboard/page_schedule.dart';
@@ -143,6 +145,20 @@ class _DashboardPageState extends State<DashboardPage> {
     }
   }
 
+  void saveToDB(List<List<String>> scheduleRaw) async {
+    for (var i = 0; i < scheduleRaw.length; i++) {
+      var keyOfDays = await dashboardRepo.read(scheduleRaw[i][5]);
+      if (keyOfDays.isNotEmpty == true) {
+        keyOfDays.add("|");
+        var el = scheduleRaw[i].iterator.toString();
+        keyOfDays.add(el);
+        continue;
+      }
+      await dashboardRepo.write(scheduleRaw[i][5], scheduleRaw[i]);
+      print('keyOfDays : $keyOfDays');
+    }
+  }
+
   String greeting() {
     var time = DateTime.now();
     var hour = time.hour;
@@ -176,8 +192,6 @@ class _DashboardPageState extends State<DashboardPage> {
     }
   }
 
-  var time = DateTime.now();
-
   @override
   Widget build(BuildContext context) {
     return FutureBuilder(
@@ -187,6 +201,11 @@ class _DashboardPageState extends State<DashboardPage> {
           final username = snapshot.data[0] as String;
           final schedule = snapshot.data[1] as List<List<String>>;
           final greet = greeting();
+          saveToDB(schedule);
+          // scheduleGlobe = schedule;
+          // print('schedule Global: $scheduleGlobe');
+          // print('schedule from dasbiar : $schedule');
+          // isolateNextSchedule();
           return Scaffold(
             backgroundColor: Colors.black,
             appBar: AppBar(

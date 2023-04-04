@@ -23,6 +23,7 @@ class SchedulePage extends StatefulWidget {
 class _SchedulePageState extends State<SchedulePage> {
   List<List<String>> choosenSchedule = [];
   List<List<String>> todaySchedule = [];
+
   int _selectedIdx = -1;
   bool _isFirstOpen = true;
   bool _isNoScheduleToday = false;
