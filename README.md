@@ -10,6 +10,6 @@ Some things that need to be considered in using Unai Reminder are:
 - Enter the same credential/account as the Indonesian Adventist University Student Module.
 - Please turn on autostart mode when requested by the application to solve the problem of notifications not appearing.
 - If you see there is an error in the schedule output, please exit the application and log back in (cases like this occur because the internet connection is weak and still under checking).
-- If you once turn off your phone, the notifications of your upcoming schedule will not appear since i didn't put the code to isolate the task while the device turn off. hehe i still on learning this one.
+- If you once turn off your phone, the notifications of your upcoming schedule will not appear since i didn't put the code to isolate the task while the device turn off. So, please launch the app again.(hehe i still on learning this one.)
 
 Thank you for using Unai Reminder.
