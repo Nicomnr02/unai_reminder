@@ -60,8 +60,17 @@ Map<int, String> days = {1: "M.", 2: "T.", 3: "W.", 4: "Th.", 5: "F.", 7: "S."};
 List<List<String>> scheduleGlobe = [];
 Future<void> isolateNextSchedule() async {
   var id = DateTime.now().weekday + 1;
+
   await AndroidAlarmManager.periodic(
-      const Duration(minutes: 1), id, runAppAuto);
+      rescheduleOnReboot: true,
+      exact: true,
+      allowWhileIdle: true,
+      wakeup: true,
+      startAt: DateTime(DateTime.now().year, DateTime.now().month,
+          DateTime.now().day, 7), //every 7 am
+      const Duration(hours: 24),
+      id,
+      runAppAuto);
 }
 
 @pragma('vm:entry-point')
@@ -105,7 +114,14 @@ void runAppAuto() async {
     nextSchedules.add(splitted);
   }
 
-  await AlarmUtils(nextSchedules);
+  if (nextSchedules.isEmpty == true) {
+    AlarmUtils([
+      ["empty"]
+    ]);
+  } else {
+    AlarmUtils(nextSchedules);
+  }
+
   print("nextScheduleTrigger : $nextSchedules");
 }
 
@@ -155,11 +171,16 @@ class AlarmUtils {
   }
 
   void alarmBytriggerByOrder(List<List<String>> thistodaySchedule) async {
-    await startTask();
+    if (todaySchedule[0][0] == "empty") {
+      oneShotNotification(9090, "No schedule tomorrow", "Have a nice day!");
+      await startTask();
+      return;
+    } else {
+      await startTask();
+    }
     sortData();
-
-    int tempM = DateTime.now().minute + 1;
-    int tempH = DateTime.now().hour;
+    // int tempM = DateTime.now().minute + 1;
+    // int tempH = DateTime.now().hour;
 
     for (var i = 0; i < thistodaySchedule.length; i++) {
       var rawHour = thistodaySchedule[i][3];
@@ -186,17 +207,15 @@ class AlarmUtils {
           bigPicture: 'asset://assets/images/times.png',
         ),
         schedule: NotificationCalendar(
-          //days[todaySchedule[i][5]]
-            weekday: 2,
-            hour: tempH,
-            minute: tempM,
+            weekday: days[todaySchedule[i][5]],
+            hour: hourInt - 1,
+            minute: 50,
             second: 0,
             timeZone: "Asia/Jakarta",
             repeats: true,
             allowWhileIdle: true),
       );
-
-      tempM += 1;
+      // tempM += 1;
     }
   }
 
