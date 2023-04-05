@@ -4,8 +4,6 @@ UNAI Reminder is a reminder application (android) for the study schedule of the 
 
 ## Getting Started
 
-Things that need to be considered in using Unai Reminder.
-
 - Highly recommended to make sure the internet connection is good when you want to log in.
 - Enter the same credential/account as the Indonesian Adventist University Student Module.
 - Please turn on autostart mode when requested by the application to solve the problem of notifications not appearing.
